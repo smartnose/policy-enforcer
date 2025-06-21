@@ -7,6 +7,7 @@ from typing import Callable, Optional, Any
 from pydantic import BaseModel
 
 from ..state import AgentState, Activity, WeatherCondition
+from ..items import Item, ItemRequirements
 
 
 class RuleResult(BaseModel):
@@ -37,21 +38,23 @@ class PlayGamesRule(BusinessRule):
     def __init__(self):
         super().__init__(
             name="Play Games Equipment Rule",
-            description="The user must have a TV and an Xbox before they can play games"
+            description=f"The user must have a {Item.TV.value} and an {Item.XBOX.value} before they can play games"
         )
     
     def check(self, state: AgentState, activity: str = None, **kwargs) -> RuleResult:
         if activity != Activity.PLAY_GAMES.value:
             return RuleResult(allowed=True)
         
-        required_items = ["TV", "Xbox"]
-        if state.has_items(required_items):
+        required_items = ItemRequirements.PLAY_GAMES
+        missing_items = ItemRequirements.get_missing_items(activity, state.inventory)
+        
+        if not missing_items:
             return RuleResult(allowed=True)
         
-        missing_items = [item for item in required_items if not state.has_item(item)]
+        missing_names = [item.value for item in missing_items]
         return RuleResult(
             allowed=False,
-            reason=f"Cannot play games. Missing required items: {', '.join(missing_items)}"
+            reason=f"Cannot play games. Missing required items: {', '.join(missing_names)}"
         )
 
 
@@ -61,19 +64,21 @@ class CampingEquipmentRule(BusinessRule):
     def __init__(self):
         super().__init__(
             name="Camping Equipment Rule",
-            description="The user must have Hiking Boots before they can go camping"
+            description=f"The user must have {Item.HIKING_BOOTS.value} before they can go camping"
         )
     
     def check(self, state: AgentState, activity: str = None, **kwargs) -> RuleResult:
         if activity != Activity.GO_CAMPING.value:
             return RuleResult(allowed=True)
         
-        if state.has_item("Hiking Boots"):
+        missing_items = ItemRequirements.get_missing_items(activity, state.inventory)
+        
+        if not missing_items:
             return RuleResult(allowed=True)
         
         return RuleResult(
             allowed=False,
-            reason="Cannot go camping. Missing required item: Hiking Boots"
+            reason=f"Cannot go camping. Missing required item: {Item.HIKING_BOOTS.value}"
         )
 
 
@@ -83,19 +88,21 @@ class SwimmingEquipmentRule(BusinessRule):
     def __init__(self):
         super().__init__(
             name="Swimming Equipment Rule",
-            description="The user must have Goggles before they can go swimming"
+            description=f"The user must have {Item.GOGGLES.value} before they can go swimming"
         )
     
     def check(self, state: AgentState, activity: str = None, **kwargs) -> RuleResult:
         if activity != Activity.SWIMMING.value:
             return RuleResult(allowed=True)
         
-        if state.has_item("Goggles"):
+        missing_items = ItemRequirements.get_missing_items(activity, state.inventory)
+        
+        if not missing_items:
             return RuleResult(allowed=True)
         
         return RuleResult(
             allowed=False,
-            reason="Cannot go swimming. Missing required item: Goggles"
+            reason=f"Cannot go swimming. Missing required item: {Item.GOGGLES.value}"
         )
 
 

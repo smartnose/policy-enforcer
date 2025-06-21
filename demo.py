@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from policy_enforcer.state import get_state, reset_state, WeatherCondition, Activity
 from policy_enforcer.rules import get_rule_engine
 from policy_enforcer.tools import get_tools
+from policy_enforcer.items import Item
 
 
 def print_banner():
@@ -59,11 +60,11 @@ def demo_business_rules():
     shopping_tool = next(tool for tool in tools if tool.name == "shopping")
     
     print("Buying TV...")
-    result = shopping_tool.run({"item": "TV"})
+    result = shopping_tool.run({"item": Item.TV.value})
     print(f"Result: {result}")
     
     print("Buying Xbox...")
-    result = shopping_tool.run({"item": "Xbox"})
+    result = shopping_tool.run({"item": Item.XBOX.value})
     print(f"Result: {result}")
     
     print(f"\nUpdated inventory: {list(state.inventory)}")
@@ -88,7 +89,7 @@ def demo_business_rules():
     
     # Try camping based on weather
     print("\nBuying hiking boots...")
-    result = shopping_tool.run({"item": "Hiking Boots"})
+    result = shopping_tool.run({"item": Item.HIKING_BOOTS.value})
     print(f"Result: {result}")
     
     print("\nTrying to go camping...")
@@ -114,12 +115,12 @@ def demo_state_management():
     state = get_state()
     
     print("Adding items to inventory...")
-    state.add_to_inventory("Goggles")
-    state.add_to_inventory("Sunscreen")
+    state.add_to_inventory(Item.GOGGLES.value)
+    state.add_to_inventory(Item.SUNSCREEN.value)
     
-    print(f"Has Goggles: {state.has_item('Goggles')}")
-    print(f"Has Swimming gear: {state.has_items(['Goggles'])}")
-    print(f"Has Gaming gear: {state.has_items(['TV', 'Xbox'])}")
+    print(f"Has Goggles: {state.has_item(Item.GOGGLES.value)}")
+    print(f"Has Swimming gear: {state.has_items([Item.GOGGLES.value])}")
+    print(f"Has Gaming gear: {state.has_items([Item.TV.value, Item.XBOX.value])}")
     
     print("\nSetting weather to snowy...")
     state.set_weather(WeatherCondition.SNOWING)
