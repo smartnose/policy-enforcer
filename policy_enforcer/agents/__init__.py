@@ -5,7 +5,7 @@ ReAct agent with business rule enforcement.
 from typing import Any, Dict, List, Optional
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain.prompts import PromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.tools import BaseTool
 
 from ..state import get_state, reset_state
@@ -16,10 +16,10 @@ from ..tools import get_tools
 class PolicyEnforcerAgent:
     """ReAct agent with integrated business rule enforcement."""
     
-    def __init__(self, model_name: str = "gpt-4", temperature: float = 0.1):
+    def __init__(self, model_name: str = "gemini-1.5-flash", temperature: float = 0.1):
         self.model_name = model_name
         self.temperature = temperature
-        self.llm = ChatOpenAI(model=model_name, temperature=temperature)
+        self.llm = ChatGoogleGenerativeAI(model=model_name, temperature=temperature)
         self.tools = get_tools()
         self.agent_executor = self._create_agent()
     
@@ -124,6 +124,6 @@ User Request: {user_input}
         return rule_engine.get_rules_summary()
 
 
-def create_agent(model_name: str = "gpt-4", temperature: float = 0.1) -> PolicyEnforcerAgent:
+def create_agent(model_name: str = "gemini-1.5-flash", temperature: float = 0.1) -> PolicyEnforcerAgent:
     """Create a new policy enforcer agent instance."""
     return PolicyEnforcerAgent(model_name=model_name, temperature=temperature)

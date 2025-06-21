@@ -14,16 +14,16 @@ def test_cli_setup():
     """Test the CLI setup without OpenAI."""
     print("🧪 Testing CLI Setup...")
     
-    # Mock the OpenAI client
-    with patch('openai.OpenAI') as mock_openai:
+    # Mock the Google client
+    with patch('google.generativeai') as mock_google:
         # Set fake API key
-        os.environ['OPENAI_API_KEY'] = 'test-key-123'
+        os.environ['GOOGLE_API_KEY'] = 'test-key-123'
         
         # Import after setting the env var
         from policy_enforcer.agents import create_agent
         
         # Mock the LLM to avoid actual API calls
-        with patch('langchain_openai.ChatOpenAI') as mock_llm:
+        with patch('langchain_google_genai.ChatGoogleGenerativeAI') as mock_llm:
             mock_llm.return_value = MagicMock()
             
             try:
@@ -57,7 +57,7 @@ def main():
         print("\n🎉 All CLI tests passed!")
         print("\nThe Policy Enforcer is ready for use!")
         print("\nNext steps:")
-        print("1. Get an OpenAI API key from https://platform.openai.com")
+        print("1. Get a Google API key from https://makersuite.google.com/app/apikey")
         print("2. Copy .env.example to .env and add your API key")
         print("3. Run: python main.py")
         print("4. Or run the demo without API: python demo.py")

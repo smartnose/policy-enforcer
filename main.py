@@ -19,10 +19,11 @@ def print_banner():
 ╔═══════════════════════════════════════════════════════════╗
 ║                    Policy Enforcer Demo                   ║
 ║              ReAct Agent with Business Rules              ║
+║                   Powered by Gemini 1.5 Flash            ║
 ╚═══════════════════════════════════════════════════════════╝
 
 This demo showcases a ReAct agent that enforces business rules
-when helping users choose activities.
+when helping users choose activities using Google's Gemini model.
 
 Available activities: Play games, Go Camping, Swimming
 Type 'help' for available commands.
@@ -56,12 +57,12 @@ def setup_environment() -> bool:
     # Load environment variables
     load_dotenv()
     
-    # Check for OpenAI API key
-    api_key = os.getenv("OPENAI_API_KEY")
+    # Check for Google API key
+    api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        print("❌ Error: OPENAI_API_KEY not found in environment variables.")
-        print("Please set your OpenAI API key in a .env file or environment variable.")
-        print("Example: export OPENAI_API_KEY='your-api-key-here'")
+        print("❌ Error: GOOGLE_API_KEY not found in environment variables.")
+        print("Please set your Google API key in a .env file or environment variable.")
+        print("Example: export GOOGLE_API_KEY='your-api-key-here'")
         return False
     
     return True

@@ -1,6 +1,6 @@
 # Policy Enforcer
 
-A ReAct agent demo showcasing business rule enforcement in autonomous AI agents using LangChain and OpenAI GPT-4.
+A ReAct agent demo showcasing business rule enforcement in autonomous AI agents using LangChain and Google's Gemini 1.5 Flash model.
 
 ## Overview
 
@@ -8,7 +8,7 @@ This project demonstrates how to build an AI agent that enforces business rules 
 
 ## Features
 
-- **ReAct Agent**: Uses LangChain's ReAct (Reasoning + Acting) pattern with OpenAI GPT-4
+- **ReAct Agent**: Uses LangChain's ReAct (Reasoning + Acting) pattern with Google's Gemini 1.5 Flash
 - **Business Rule Enforcement**: Automatic validation of business rules before tool execution
 - **State Management**: Tracks user inventory, weather conditions, and activity choices
 - **Policy Engine**: Flexible rule system with explainable failures
@@ -32,6 +32,28 @@ The demo implements the following business rules:
 2. **Shopping**: Mock API to purchase items and add them to inventory
 3. **Choose Activity**: Validates and sets the user's chosen activity
 
+## Quick Start
+
+### 1. Try the Demo (No API Key Required)
+```bash
+git clone <repository-url>
+cd policy-enforcer
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python demo.py
+```
+
+### 2. Use the Full Agent (Requires Google API Key)
+```bash
+# Set up environment
+cp .env.example .env
+# Edit .env and add: GOOGLE_API_KEY=your_key_here
+
+# Run the interactive agent
+python main.py
+```
+
 ## Installation
 
 1. Clone the repository:
@@ -45,10 +67,10 @@ cd policy-enforcer
 pip install -r requirements.txt
 ```
 
-3. Set up your OpenAI API key:
+3. Set up your Google API key:
 ```bash
 cp .env.example .env
-# Edit .env and add your OpenAI API key
+# Edit .env and add your Google API key
 ```
 
 ## Usage
@@ -56,6 +78,27 @@ cp .env.example .env
 Run the demo:
 ```bash
 python main.py
+```
+
+## Example Output
+
+```
+👤 You: I want to go camping
+🤖 Agent: I'll help you go camping! Let me first check what you need...
+
+Action: check_weather
+Action Input: {}
+Observation: 🌤️ Weather check complete! Current weather: sunny
+
+Action: shopping  
+Action Input: {"item": "Hiking Boots"}
+Observation: 🛒 Successfully purchased: Hiking Boots. Added to inventory!
+
+Action: choose_activity
+Action Input: {"activity": "Go Camping"}  
+Observation: 🎯 Activity chosen: Go Camping! Have fun!
+
+🤖 Agent: Perfect! I've checked the weather (it's sunny), purchased the required hiking boots for you, and successfully selected camping as your activity. You're all set to go camping!
 ```
 
 ### Example Interactions
@@ -135,7 +178,7 @@ policy-enforcer/
 ## Requirements
 
 - Python 3.8+
-- OpenAI API key
+- Google API key
 - LangChain 0.1.0+
 - Pydantic 2.0+
 

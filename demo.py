@@ -140,8 +140,8 @@ def main():
         demo_state_management()
         
         print(f"\n🎉 Demo completed successfully!")
-        print(f"\nTo use the full ReAct agent with OpenAI:")
-        print(f"1. Set OPENAI_API_KEY in .env file")
+        print(f"\nTo use the full ReAct agent with Google Gemini:")
+        print(f"1. Set GOOGLE_API_KEY in .env file")
         print(f"2. Run: python main.py")
         
     except Exception as e:
