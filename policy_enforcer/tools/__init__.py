@@ -2,6 +2,7 @@
 Tools for the policy enforcer agent.
 """
 
+from hmac import new
 import random
 from typing import Any, Dict, Optional, Type, Union
 from langchain.tools import BaseTool
@@ -9,7 +10,7 @@ from pydantic import BaseModel, Field
 
 from ..state import get_state, WeatherCondition, Activity
 from ..rules import get_rule_engine, RuleResult
-from ..items import ItemRequirements
+from ..items import Item, ItemRequirements
 
 
 class WeatherToolInput(BaseModel):
@@ -19,7 +20,7 @@ class WeatherToolInput(BaseModel):
 
 class ShoppingToolInput(BaseModel):
     """Input for the shopping tool."""
-    item: str = Field(description="The item to purchase")
+    item: Item = Field(description="The item to purchase")
 
 
 class ActivityToolInput(BaseModel):
@@ -62,7 +63,7 @@ class PolicyEnforcedTool(BaseTool):
         else:
             return {}
     
-    def _run(self, tool_input: Optional[str] = None) -> str:
+    def _run(self, tool_input: Optional[str] = None, **kwargs) -> str:
         """Main execution method that handles rule checking and delegates to execute."""
         # Parse input into parameters
         params = self.parse_input(tool_input)
@@ -96,7 +97,9 @@ class CheckWeatherTool(PolicyEnforcedTool):
         
         # Generate random weather
         weather_options = [WeatherCondition.SUNNY, WeatherCondition.RAINING, WeatherCondition.SNOWING]
+
         new_weather = random.choice(weather_options)
+        new_weather = WeatherCondition.SUNNY
         
         # Update state
         state.set_weather(new_weather)
@@ -113,14 +116,9 @@ class ShoppingTool(PolicyEnforcedTool):
     
     def parse_input(self, tool_input: Any) -> Dict[str, Any]:
         """Parse shopping tool input to extract item parameter."""
-        if isinstance(tool_input, dict):
-            return tool_input
-        elif isinstance(tool_input, str):
-            return {"item": tool_input}
-        else:
-            return {}
+        return tool_input 
     
-    def execute(self, item: Optional[str] = None, **kwargs) -> str:
+    def execute(self, *, item: Optional[Item] = None, **kwargs) -> str:
         if not item:
             return "❌ No item specified for purchase."
         
@@ -154,7 +152,7 @@ class ChooseActivityTool(PolicyEnforcedTool):
         else:
             return {}
     
-    def check_tool_rules(self, activity: Optional[str] = None, **kwargs) -> Optional[str]:
+    def check_tool_rules(self, *, activity: Optional[str] = None, **kwargs) -> Optional[str]:
         """Check activity-specific rules in addition to tool rules."""
         # First check general tool rules
         rule_violation = super().check_tool_rules(**kwargs)
@@ -172,7 +170,7 @@ class ChooseActivityTool(PolicyEnforcedTool):
         
         return None
     
-    def execute(self, activity: Optional[str] = None, **kwargs) -> str:
+    def execute(self, *, activity: Optional[str] = None, **kwargs) -> str:
         if not activity:
             return "❌ No activity specified."
         

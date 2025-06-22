@@ -54,7 +54,7 @@ Examples:
 
 def setup_environment() -> bool:
     """Setup environment variables and check requirements."""
-    # Load environment variables
+    # Load environment variables from .env file in the project root
     load_dotenv()
     
     # Check for Google API key
@@ -65,6 +65,7 @@ def setup_environment() -> bool:
         print("Example: export GOOGLE_API_KEY='your-api-key-here'")
         return False
     
+    print(f"✅ Google API key loaded successfully (length: {len(api_key)} chars)")
     return True
 
 
