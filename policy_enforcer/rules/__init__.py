@@ -24,8 +24,13 @@ class BusinessRule(ABC):
         self.description = description
     
     @abstractmethod
-    def check(self, state: AgentState, *args, **kwargs) -> RuleResult:
-        """Check if the rule allows the action."""
+    def check(self, state: AgentState, **kwargs) -> RuleResult:
+        """Check if the rule allows the action.
+        
+        Args:
+            state: Current agent state
+            **kwargs: Keyword arguments specific to each rule type
+        """
         pass
     
     def __str__(self) -> str:
@@ -41,7 +46,7 @@ class PlayGamesRule(BusinessRule):
             description=f"The user must have a {Item.TV.value} and an {Item.XBOX.value} before they can play games"
         )
     
-    def check(self, state: AgentState, activity: str = None, **kwargs) -> RuleResult:
+    def check(self, state: AgentState, *, activity: Optional[str] = None, **kwargs) -> RuleResult:
         if activity != Activity.PLAY_GAMES.value:
             return RuleResult(allowed=True)
         
@@ -67,7 +72,7 @@ class CampingEquipmentRule(BusinessRule):
             description=f"The user must have {Item.HIKING_BOOTS.value} before they can go camping"
         )
     
-    def check(self, state: AgentState, activity: str = None, **kwargs) -> RuleResult:
+    def check(self, state: AgentState, *, activity: Optional[str] = None, **kwargs) -> RuleResult:
         if activity != Activity.GO_CAMPING.value:
             return RuleResult(allowed=True)
         
@@ -91,7 +96,7 @@ class SwimmingEquipmentRule(BusinessRule):
             description=f"The user must have {Item.GOGGLES.value} before they can go swimming"
         )
     
-    def check(self, state: AgentState, activity: str = None, **kwargs) -> RuleResult:
+    def check(self, state: AgentState, *, activity: Optional[str] = None, **kwargs) -> RuleResult:
         if activity != Activity.SWIMMING.value:
             return RuleResult(allowed=True)
         
@@ -115,7 +120,7 @@ class CampingWeatherRule(BusinessRule):
             description="If the weather is raining, the user cannot go camping"
         )
     
-    def check(self, state: AgentState, activity: str = None, **kwargs) -> RuleResult:
+    def check(self, state: AgentState, *, activity: Optional[str] = None, **kwargs) -> RuleResult:
         if activity != Activity.GO_CAMPING.value:
             return RuleResult(allowed=True)
         
@@ -137,7 +142,7 @@ class SwimmingWeatherRule(BusinessRule):
             description="If the weather is snowing, the user cannot go swimming"
         )
     
-    def check(self, state: AgentState, activity: str = None, **kwargs) -> RuleResult:
+    def check(self, state: AgentState, *, activity: Optional[str] = None, **kwargs) -> RuleResult:
         if activity != Activity.SWIMMING.value:
             return RuleResult(allowed=True)
         
@@ -159,7 +164,7 @@ class UnknownWeatherRule(BusinessRule):
             description="If the weather is unknown, the user can only play games"
         )
     
-    def check(self, state: AgentState, activity: str = None, **kwargs) -> RuleResult:
+    def check(self, state: AgentState, *, activity: Optional[str] = None, **kwargs) -> RuleResult:
         if state.weather != WeatherCondition.UNKNOWN:
             return RuleResult(allowed=True)
         
@@ -178,10 +183,10 @@ class WeatherCheckRule(BusinessRule):
     def __init__(self):
         super().__init__(
             name="Weather Check Rule",
-            description="If the weather is already known, the weather tool cannot be called again"
+            description="If the weather is already known, the weather tool cannot be called again. Do not call weather tool twice."
         )
     
-    def check(self, state: AgentState, tool_name: str = None, **kwargs) -> RuleResult:
+    def check(self, state: AgentState, *, tool_name: Optional[str] = None, **kwargs) -> RuleResult:
         if tool_name != "check_weather":
             return RuleResult(allowed=True)
         

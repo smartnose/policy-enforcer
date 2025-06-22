@@ -3,7 +3,7 @@ Tools for the policy enforcer agent.
 """
 
 import random
-from typing import Any, Dict, Optional, Type
+from typing import Any, Dict, Optional, Type, Union
 from langchain.tools import BaseTool
 from pydantic import BaseModel, Field
 
@@ -44,7 +44,7 @@ class PolicyEnforcedTool(BaseTool):
         rule_engine = get_rule_engine()
         
         # Check general tool-specific rules
-        result = rule_engine.check_tool_rules(state, self.name)
+        result = rule_engine.check_tool_rules(state, tool_name=self.name)
         if not result.allowed:
             return result.reason
         
@@ -57,16 +57,12 @@ class PolicyEnforcedTool(BaseTool):
         elif isinstance(tool_input, dict):
             return tool_input
         elif isinstance(tool_input, str):
-            # Default: assume single parameter tools use the first field name
-            if hasattr(self, 'args_schema') and self.args_schema:
-                schema_fields = list(self.args_schema.__fields__.keys())
-                if schema_fields:
-                    return {schema_fields[0]: tool_input}
+            # Simple fallback - let subclasses handle specific parsing
             return {"input": tool_input}
         else:
             return {}
     
-    def _run(self, tool_input: str=None) -> str:
+    def _run(self, tool_input: Optional[str] = None) -> str:
         """Main execution method that handles rule checking and delegates to execute."""
         # Parse input into parameters
         params = self.parse_input(tool_input)
@@ -112,14 +108,8 @@ class ShoppingTool(PolicyEnforcedTool):
     """Tool to purchase items."""
     
     name: str = "shopping"
-    description: str = "Purchase an item and add it to your inventory. Specify the item name."
+    description: str = "Purchase an item and add it to your inventory. Available items: TV, Xbox, Hiking Boots, Goggles, Sunscreen"
     args_schema: Type[BaseModel] = ShoppingToolInput
-    
-    def __init__(self):
-        super().__init__()
-        # Update description with available items
-        available_items = ", ".join(ItemRequirements.get_all_items())
-        self.description = f"Purchase an item and add it to your inventory. Available items: {available_items}"
     
     def parse_input(self, tool_input: Any) -> Dict[str, Any]:
         """Parse shopping tool input to extract item parameter."""
@@ -130,7 +120,7 @@ class ShoppingTool(PolicyEnforcedTool):
         else:
             return {}
     
-    def execute(self, item: str = None, **kwargs) -> str:
+    def execute(self, item: Optional[str] = None, **kwargs) -> str:
         if not item:
             return "❌ No item specified for purchase."
         
@@ -164,7 +154,7 @@ class ChooseActivityTool(PolicyEnforcedTool):
         else:
             return {}
     
-    def check_tool_rules(self, activity: str = None, **kwargs) -> Optional[str]:
+    def check_tool_rules(self, activity: Optional[str] = None, **kwargs) -> Optional[str]:
         """Check activity-specific rules in addition to tool rules."""
         # First check general tool rules
         rule_violation = super().check_tool_rules(**kwargs)
@@ -182,7 +172,7 @@ class ChooseActivityTool(PolicyEnforcedTool):
         
         return None
     
-    def execute(self, activity: str = None, **kwargs) -> str:
+    def execute(self, activity: Optional[str] = None, **kwargs) -> str:
         if not activity:
             return "❌ No activity specified."
         
