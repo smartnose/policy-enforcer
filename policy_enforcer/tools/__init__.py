@@ -2,9 +2,8 @@
 Tools for the policy enforcer agent.
 """
 
-from hmac import new
 import random
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Dict, Optional, Type
 from langchain.tools import BaseTool
 from pydantic import BaseModel, Field
 
@@ -34,6 +33,39 @@ def validate_item_input(item: str) -> Optional[str]:
         available_items = ", ".join(ItemRequirements.get_all_items())
         return f"Invalid item '{item}'. Available items: {available_items}"
     return None
+
+
+def parse_langchain_input(tool_input: Any, key: str) -> Dict[str, Any]:
+    """
+    Parse LangChain tool input handling the JSON string issue.
+    
+    This is a workaround for LangChain parameter mapping issue where
+    LangChain passes JSON strings like '{"key": "value"}' instead of 
+    parsed dictionaries.
+    
+    Args:
+        tool_input: The input from LangChain (dict, JSON string, or plain string)
+        key: The expected parameter key name
+    
+    Returns:
+        Dictionary with parsed parameters
+    """
+    if isinstance(tool_input, dict):
+        return tool_input
+    elif isinstance(tool_input, str):
+        # Handle case where LangChain passes JSON string instead of parsed dict
+        import json
+        try:
+            parsed = json.loads(tool_input)
+            if isinstance(parsed, dict):
+                return parsed
+            else:
+                return {key: tool_input}
+        except (json.JSONDecodeError, TypeError):
+            # If not JSON, treat as plain string value
+            return {key: tool_input}
+    else:
+        return {}
 
 
 class PolicyEnforcedTool(BaseTool):
@@ -116,24 +148,7 @@ class ShoppingTool(PolicyEnforcedTool):
     
     def parse_input(self, tool_input: Any) -> Dict[str, Any]:
         """Parse shopping tool input to extract item parameter."""
-        key = "item"
-        if isinstance(tool_input, dict):
-            return tool_input
-        elif isinstance(tool_input, str):
-            
-            # Handle case where LangChain passes JSON string instead of parsed dict
-            import json
-            try:
-                parsed = json.loads(tool_input)
-                if isinstance(parsed, dict):
-                    return parsed
-                else:
-                    return {key: tool_input}
-            except (json.JSONDecodeError, TypeError):
-                # If not JSON, treat as plain string item name
-                return {key: tool_input}
-        else:
-            return {}
+        return parse_langchain_input(tool_input, "item")
     
     def execute(self, *, item: Optional[str] = None, **kwargs) -> str:
         if not item:
@@ -162,13 +177,7 @@ class ChooseActivityTool(PolicyEnforcedTool):
     
     def parse_input(self, tool_input: Any) -> Dict[str, Any]:
         """Parse activity tool input to extract activity parameter."""
-        
-        if isinstance(tool_input, dict):
-            return tool_input
-        elif isinstance(tool_input, str):
-            return {"activity": tool_input}
-        else:
-            return {}
+        return parse_langchain_input(tool_input, "activity")
     
     def check_tool_rules(self, *, activity: Optional[str] = None, **kwargs) -> Optional[str]:
         """Check activity-specific rules in addition to tool rules."""
