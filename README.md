@@ -6,6 +6,8 @@ A ReAct agent demo showcasing business rule enforcement in autonomous AI agents 
 
 This project demonstrates how to build an AI agent that enforces business rules without hardcoding workflows. The agent helps users choose activities (Play games, Go Camping, Swimming) while automatically enforcing predefined business policies.
 
+Note: *Our way of enforcing policy check is independent from LLM-based guardrails. The business rules here are deterministic (unless your rule actually calls other non-deterministic code)*
+
 ## Features
 
 - **ReAct Agent**: Uses LangChain's ReAct (Reasoning + Acting) pattern with Google's Gemini 1.5 Flash
