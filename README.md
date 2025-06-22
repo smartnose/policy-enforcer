@@ -58,11 +58,14 @@ python main.py
 
 ### 3. Run Tests and Coverage
 ```bash
+# Install development dependencies first
+pip install -r requirements-dev.txt
+
 # Run all tests
-python -m pytest -v
+python -m pytest tests/ -v
 
 # Run tests with coverage report
-python -m pytest --cov=policy_enforcer --cov-report=html --cov-report=term-missing
+python -m pytest tests/ --cov=policy_enforcer --cov-report=html --cov-report=term-missing
 
 # Run specific test
 python -m pytest tests/test_tools.py::TestShoppingTool::test_execute_valid_item -v
@@ -79,6 +82,9 @@ cd policy-enforcer
 2. Install dependencies:
 ```bash
 pip install -r requirements.txt
+
+# For development (includes testing dependencies)
+pip install -r requirements-dev.txt
 ```
 
 3. Set up your Google API key:
@@ -145,9 +151,11 @@ Observation: 🎯 Activity chosen: Go Camping! Have fun!
 policy-enforcer/
 ├── main.py                     # CLI application entry point
 ├── demo.py                     # Demo without API key
-├── requirements.txt            # Python dependencies
+├── requirements.txt            # Production dependencies
+├── requirements-dev.txt        # Development dependencies
 ├── setup.py                   # Package setup
 ├── .env.example               # Environment template
+├── pytest.ini                # Test configuration
 ├── .vscode/                   # VS Code configuration
 │   ├── launch.json           # Debug configurations
 │   ├── settings.json         # Python settings
@@ -223,11 +231,14 @@ The project includes a comprehensive test suite with 101 unit tests covering all
 
 ### Running Tests
 ```bash
+# Install development dependencies first
+pip install -r requirements-dev.txt
+
 # Run all tests
-python -m pytest -v
+python -m pytest tests/ -v
 
 # Run with coverage
-python -m pytest --cov=policy_enforcer --cov-report=html --cov-report=term-missing
+python -m pytest tests/ --cov=policy_enforcer --cov-report=html --cov-report=term-missing
 
 # Run specific test categories
 python -m pytest tests/test_rules.py -v              # Rules tests only
@@ -249,7 +260,9 @@ The project includes VS Code tasks for easy testing:
 - Google API key (for full agent functionality)
 - LangChain 0.1.0+
 - Pydantic 2.0+
-- pytest 7.0+ (for development)
+
+### Development Requirements
+- pytest 7.0+ (for running tests)
 - pytest-cov 4.0+ (for coverage reports)
 
 ## License
