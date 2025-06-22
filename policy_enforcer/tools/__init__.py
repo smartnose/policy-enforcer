@@ -20,7 +20,7 @@ class WeatherToolInput(BaseModel):
 
 class ShoppingToolInput(BaseModel):
     """Input for the shopping tool."""
-    item: Item = Field(description="The item to purchase")
+    item: str = Field(description="The item to purchase: TV, Xbox, Hiking Boots, Goggles, or Sunscreen")
 
 
 class ActivityToolInput(BaseModel):
@@ -116,9 +116,26 @@ class ShoppingTool(PolicyEnforcedTool):
     
     def parse_input(self, tool_input: Any) -> Dict[str, Any]:
         """Parse shopping tool input to extract item parameter."""
-        return tool_input 
+        key = "item"
+        if isinstance(tool_input, dict):
+            return tool_input
+        elif isinstance(tool_input, str):
+            
+            # Handle case where LangChain passes JSON string instead of parsed dict
+            import json
+            try:
+                parsed = json.loads(tool_input)
+                if isinstance(parsed, dict):
+                    return parsed
+                else:
+                    return {key: tool_input}
+            except (json.JSONDecodeError, TypeError):
+                # If not JSON, treat as plain string item name
+                return {key: tool_input}
+        else:
+            return {}
     
-    def execute(self, *, item: Optional[Item] = None, **kwargs) -> str:
+    def execute(self, *, item: Optional[str] = None, **kwargs) -> str:
         if not item:
             return "❌ No item specified for purchase."
         
@@ -145,6 +162,7 @@ class ChooseActivityTool(PolicyEnforcedTool):
     
     def parse_input(self, tool_input: Any) -> Dict[str, Any]:
         """Parse activity tool input to extract activity parameter."""
+        
         if isinstance(tool_input, dict):
             return tool_input
         elif isinstance(tool_input, str):

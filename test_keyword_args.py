@@ -64,7 +64,7 @@ def test_keyword_only_arguments():
     print(f"\n4️⃣ Final state:")
     print(f"   Inventory: {state.inventory}")
     print(f"   Weather: {state.weather.value}")
-    print(f"   Activity: {state.activity.value if state.activity else 'None'}")
+    print(f"   Activity: {state.chosen_activity.value if state.chosen_activity else 'None'}")
     
     print("\n🎉 All tests passed! Keyword-only arguments work correctly.")
 
