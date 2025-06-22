@@ -27,6 +27,11 @@ class ActivityToolInput(BaseModel):
     activity: str = Field(description="The activity to choose: 'Play games', 'Go Camping', or 'Swimming'")
 
 
+class StateToolInput(BaseModel):
+    """Input for the state checking tool."""
+    pass  # No input required
+
+
 def validate_item_input(item: str) -> Optional[str]:
     """Validate item input and return error message if invalid."""
     if not ItemRequirements.is_valid_item(item):
@@ -131,14 +136,16 @@ class CheckWeatherTool(PolicyEnforcedTool):
         weather_options = [WeatherCondition.SUNNY, WeatherCondition.RAINING, WeatherCondition.SNOWING]
 
         if( state.weather_checked and state.weather != WeatherCondition.UNKNOWN):
-            return state.weather.value
+            return (f"🌤️ Weather already checked! Current weather: {state.weather.value}\n"
+                    f"📊 Weather status: Known and checked")
         
         new_weather = random.choice(weather_options)
         
         # Update state
         state.set_weather(new_weather)
         
-        return f"🌤️ Weather check complete! Current weather: {new_weather.value}"
+        return (f"🌤️ Weather check complete! Current weather: {new_weather.value}\n"
+                f"📊 Weather status: Known and checked")
 
 
 class ShoppingTool(PolicyEnforcedTool):
@@ -166,7 +173,9 @@ class ShoppingTool(PolicyEnforcedTool):
         # Add item to inventory
         state.add_to_inventory(item)
         
-        return f"🛒 Successfully purchased: {item}. Added to inventory!"
+        # Enhanced output with state information
+        return (f"🛒 Successfully purchased: {item}. Added to inventory!\n"
+                f"📊 Current inventory: {', '.join(sorted(state.inventory)) if state.inventory else 'Empty'}")
 
 
 class ChooseActivityTool(PolicyEnforcedTool):
@@ -214,7 +223,29 @@ class ChooseActivityTool(PolicyEnforcedTool):
         activity_enum = Activity(activity)
         state.set_activity(activity_enum)
         
-        return f"🎯 Activity chosen: {activity}! Have fun!"
+        return (f"🎯 Activity chosen: {activity}! Have fun!\n"
+                f"📊 Current activity: {activity}\n"
+                f"📊 Current inventory: {', '.join(sorted(state.inventory)) if state.inventory else 'Empty'}")
+
+
+class CheckStateTool(PolicyEnforcedTool):
+    """Tool to check the current agent state."""
+    
+    name: str = "check_state"
+    description: str = "Check the current state including inventory, weather, and chosen activity."
+    args_schema: Type[BaseModel] = StateToolInput
+    
+    def parse_input(self, tool_input: Any) -> Dict[str, Any]:
+        """State tool doesn't need any input parameters."""
+        return {}
+    
+    def execute(self, **kwargs) -> str:
+        state = get_state()
+        
+        return (f"📊 **Current Agent State:**\n"
+                f"🎒 Inventory: {', '.join(sorted(state.inventory)) if state.inventory else 'Empty'}\n"
+                f"🌤️ Weather: {state.weather.value} ({'Known' if state.weather_checked else 'Unknown'})\n"
+                f"🎯 Current Activity: {state.chosen_activity.value if state.chosen_activity else 'None chosen'}")
 
 
 def get_tools() -> list[BaseTool]:
@@ -222,5 +253,6 @@ def get_tools() -> list[BaseTool]:
     return [
         CheckWeatherTool(),
         ShoppingTool(),
-        ChooseActivityTool()
+        ChooseActivityTool(),
+        CheckStateTool()
     ]
