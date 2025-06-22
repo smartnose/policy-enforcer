@@ -130,8 +130,10 @@ class CheckWeatherTool(PolicyEnforcedTool):
         # Generate random weather
         weather_options = [WeatherCondition.SUNNY, WeatherCondition.RAINING, WeatherCondition.SNOWING]
 
+        if( state.weather_checked and state.weather != WeatherCondition.UNKNOWN):
+            return state.weather.value
+        
         new_weather = random.choice(weather_options)
-        new_weather = WeatherCondition.SUNNY
         
         # Update state
         state.set_weather(new_weather)
