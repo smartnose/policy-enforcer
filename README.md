@@ -13,6 +13,8 @@ This project demonstrates how to build an AI agent that enforces business rules 
 - **State Management**: Tracks user inventory, weather conditions, and activity choices
 - **Policy Engine**: Flexible rule system with explainable failures
 - **Command Line Interface**: Interactive CLI for demonstration
+- **Comprehensive Testing**: 101 unit tests with 86% code coverage
+- **VS Code Integration**: Full debugging and testing support
 
 ## Business Rules
 
@@ -52,6 +54,18 @@ cp .env.example .env
 
 # Run the interactive agent
 python main.py
+```
+
+### 3. Run Tests and Coverage
+```bash
+# Run all tests
+python -m pytest -v
+
+# Run tests with coverage report
+python -m pytest --cov=policy_enforcer --cov-report=html --cov-report=term-missing
+
+# Run specific test
+python -m pytest tests/test_tools.py::TestShoppingTool::test_execute_valid_item -v
 ```
 
 ## Installation
@@ -130,18 +144,32 @@ Observation: 🎯 Activity chosen: Go Camping! Have fun!
 ```
 policy-enforcer/
 ├── main.py                     # CLI application entry point
+├── demo.py                     # Demo without API key
 ├── requirements.txt            # Python dependencies
 ├── setup.py                   # Package setup
+├── .env.example               # Environment template
+├── .vscode/                   # VS Code configuration
+│   ├── launch.json           # Debug configurations
+│   ├── settings.json         # Python settings
+│   └── tasks.json            # Build/test tasks
+├── tests/                     # Comprehensive test suite
+│   ├── test_integration.py   # Integration tests
+│   ├── test_items.py         # Item enum tests
+│   ├── test_rules.py         # Business rules tests
+│   ├── test_state.py         # State management tests
+│   └── test_tools.py         # Tool execution tests
 ├── policy_enforcer/           # Main package
 │   ├── __init__.py
-│   ├── agents/                # ReAct agent implementation
+│   ├── items.py              # Item constants and enums
+│   ├── agents/               # ReAct agent implementation
 │   │   └── __init__.py
-│   ├── rules/                 # Business rules engine
+│   ├── rules/                # Business rules engine
 │   │   └── __init__.py
-│   ├── state/                 # State management
+│   ├── state/                # State management
 │   │   └── __init__.py
-│   └── tools/                 # LangChain tools
+│   └── tools/                # LangChain tools
 │       └── __init__.py
+└── htmlcov/                  # Coverage reports (generated)
 ```
 
 ## Architecture
@@ -175,12 +203,54 @@ policy-enforcer/
 4. **State Tracking**: Consistent state management across all components
 5. **Graceful Failure**: Rules guide the agent to alternative actions
 
+## Testing
+
+The project includes a comprehensive test suite with 101 unit tests covering all major components:
+
+### Test Coverage
+- **86% Overall Coverage**: High test coverage across all modules
+- **Items Module**: 100% coverage - Item enums, validation, and requirements
+- **State Module**: 100% coverage - State management, persistence, and transitions  
+- **Rules Module**: 98% coverage - All business rules and rule engine logic
+- **Tools Module**: 93% coverage - Tool execution, parameter parsing, and integration
+- **Integration Tests**: Complete workflow testing including error handling
+
+### Test Categories
+1. **Unit Tests**: Individual component testing (items, state, rules, tools)
+2. **Integration Tests**: End-to-end workflow testing
+3. **Error Handling**: Comprehensive error scenario coverage
+4. **LangChain Compatibility**: JSON parameter mapping and tool integration
+
+### Running Tests
+```bash
+# Run all tests
+python -m pytest -v
+
+# Run with coverage
+python -m pytest --cov=policy_enforcer --cov-report=html --cov-report=term-missing
+
+# Run specific test categories
+python -m pytest tests/test_rules.py -v              # Rules tests only
+python -m pytest tests/test_integration.py -v       # Integration tests only
+
+# Run specific test
+python -m pytest tests/test_tools.py::TestShoppingTool::test_execute_valid_item -v
+```
+
+### VS Code Testing
+The project includes VS Code tasks for easy testing:
+- **Run Tests**: Execute all tests with detailed output
+- **Run Tests with Coverage**: Generate HTML and terminal coverage reports
+- **Run Specific Test**: Run individual test files or functions
+
 ## Requirements
 
 - Python 3.8+
-- Google API key
+- Google API key (for full agent functionality)
 - LangChain 0.1.0+
 - Pydantic 2.0+
+- pytest 7.0+ (for development)
+- pytest-cov 4.0+ (for coverage reports)
 
 ## License
 

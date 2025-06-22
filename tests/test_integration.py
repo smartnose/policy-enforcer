@@ -64,9 +64,13 @@ class TestSystemIntegration(unittest.TestCase):
         shopping_tool = next(tool for tool in self.tools if tool.name == "shopping")
         activity_tool = next(tool for tool in self.tools if tool.name == "choose_activity")
         
-        # Step 1: Check weather (assume it's sunny)
+        # Step 1: Check weather (force it to be sunny for camping)
         weather_result = weather_tool._run("")
         self.assertIn("Weather check complete", weather_result)
+        
+        # Force sunny weather for camping test
+        from policy_enforcer.state import WeatherCondition
+        self.state.set_weather(WeatherCondition.SUNNY)
         
         # Step 2: Buy hiking boots
         boots_result = shopping_tool._run('{"item": "Hiking Boots"}')
@@ -77,6 +81,7 @@ class TestSystemIntegration(unittest.TestCase):
         self.assertIn("Activity chosen", camping_result)
         
         # Verify state
+        self.assertIsNotNone(self.state.chosen_activity)
         self.assertEqual(self.state.chosen_activity.value, "Go Camping")
         self.assertIn("Hiking Boots", self.state.inventory)
     
@@ -107,7 +112,7 @@ class TestSystemIntegration(unittest.TestCase):
         
         # Second check should fail
         second_result = weather_tool._run("")
-        self.assertIn("already checked", second_result)
+        self.assertIn("Weather has already been checked", second_result)
     
     def test_langchain_json_input_compatibility(self):
         """Test compatibility with LangChain JSON string inputs."""

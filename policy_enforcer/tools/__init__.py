@@ -190,6 +190,28 @@ class ChooseActivityTool(PolicyEnforcedTool):
         """Parse activity tool input to extract activity parameter."""
         return parse_langchain_input(tool_input, "activity")
     
+    def _run(self, tool_input: Optional[str] = None, **kwargs) -> str:
+        """Custom _run method to validate activity before checking rules."""
+        # Parse input into parameters
+        params = self.parse_input(tool_input)
+        
+        # Validate activity format FIRST, before rule checking
+        activity = params.get("activity")
+        if not activity:
+            return "❌ No activity specified."
+        
+        valid_activities = [a.value for a in Activity]
+        if activity not in valid_activities:
+            return f"❌ Invalid activity. Choose from: {', '.join(valid_activities)}"
+        
+        # Now check rules with the validated activity
+        rule_violation = self.check_tool_rules(**params)
+        if rule_violation:
+            return f"❌ Rule violation: {rule_violation}"
+        
+        # Execute the actual tool logic
+        return self.execute(**params)
+    
     def check_tool_rules(self, *, activity: Optional[str] = None, **kwargs) -> Optional[str]:
         """Check activity-specific rules in addition to tool rules."""
         # First check general tool rules
@@ -214,12 +236,12 @@ class ChooseActivityTool(PolicyEnforcedTool):
         
         state = get_state()
         
-        # Validate activity choice
+        # Validate activity format
         valid_activities = [a.value for a in Activity]
         if activity not in valid_activities:
             return f"❌ Invalid activity. Choose from: {', '.join(valid_activities)}"
         
-        # Set the chosen activity
+        # Set the chosen activity (validation already done)
         activity_enum = Activity(activity)
         state.set_activity(activity_enum)
         

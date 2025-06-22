@@ -19,6 +19,10 @@ class Item(str, Enum):
     # Swimming equipment
     GOGGLES = "Goggles"
     
+    def __str__(self) -> str:
+        """Return the string value of the item."""
+        return self.value
+    
     # Additional items (for extensibility)
     SUNSCREEN = "Sunscreen"
 
