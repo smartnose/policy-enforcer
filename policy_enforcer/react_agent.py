@@ -92,8 +92,8 @@ class ReActAgent:
             kernel=kernel,
             name=f"{name}_Reasoning",
             instructions=self._build_react_prompt(),
-            service=service,
-            function_choice_behavior=self.settings.function_choice_behavior
+            service=service
+            # Don't use function_choice_behavior - we parse text responses
         )
         
         # Chat history for conversation context
@@ -104,8 +104,8 @@ class ReActAgent:
         settings = GoogleAIPromptExecutionSettings()
         settings.max_output_tokens = 4000
         settings.temperature = 0.1
-        # Enable automatic function calling for ReAct
-        settings.function_choice_behavior = FunctionChoiceBehavior.Auto()
+        # Don't use function calling - we'll parse the text response ourselves
+        # settings.function_choice_behavior = FunctionChoiceBehavior.Auto()
         return settings
     
     def _build_react_prompt(self) -> str:
@@ -136,31 +136,31 @@ Tool Names: {tool_names_str}
 
 You must follow this exact format for your responses:
 
-Question: the input question you must answer
-Thought: you should always think about what to do
-Action: the action to take, should be one of [{tool_names_str}]
-Action Input: the input to the action as a JSON object
-Observation: the result of the action
-... (this Thought/Action/Action Input/Observation can repeat N times)
-Thought: I now know the final answer
-Final Answer: the final answer to the original input question
+IMPORTANT: Only output your thoughts and actions. Do NOT include observations - I will provide those after executing your actions.
 
-IMPORTANT RULES:
-1. Always start with "Thought:" when reasoning
-2. Use "Action:" only when you need to call a tool
-3. Use "Action Input:" with valid JSON for tool parameters
-4. Wait for "Observation:" before continuing
-5. End with "Final Answer:" when you have the complete answer
-6. If you don't need any tools, go directly from Thought to Final Answer
+Format:
+Thought: [your reasoning about what to do next]
+Action: [tool name to call, must be one of: {tool_names_str}]
+Action Input: [JSON object with parameters for the tool]
+
+OR if you have enough information:
+Thought: [your reasoning]
+Final Answer: [your complete answer to the question]
+
+CRITICAL RULES:
+1. NEVER write "Observation:" - I will provide that after executing your action
+2. STOP after "Action Input:" and wait for me to give you the observation
+3. Only use tools from the available list: {tool_names_str}
+4. Action Input must be valid JSON
+5. If you don't need tools, go directly to "Final Answer:"
 
 Example:
 Question: What is the weather like?
 Thought: I need to check the current weather using the check_weather tool.
-Action: check_weather
+Action: weather.check_weather
 Action Input: {{}}
-Observation: Weather is sunny with 72°F
-Thought: I now know the final answer
-Final Answer: The weather is sunny with a temperature of 72°F.
+
+[I will then provide the observation and you continue from there]
 
 Begin!
 """
@@ -222,10 +222,18 @@ Begin!
                         print(f"✅ Final Answer: {final_answer}")
                     return final_answer
                 
-                # If we have an action to execute
-                if current_iteration.action and current_iteration.action_input is not None:
+                # Check if we have an action to execute
+                has_action = current_iteration.action and current_iteration.action_input is not None
+                
+                if self.verbose:
+                    print(f"\n🔍 Parsing result:")
+                    print(f"   Action found: {current_iteration.action}")
+                    print(f"   Action input: {current_iteration.action_input}")
+                    print(f"   Will execute: {has_action}")
+                
+                if has_action:
                     if self.verbose:
-                        print(f"\n🔄 Executing action: {current_iteration.action}...", flush=True)
+                        print(f"\n🔄 Executing REAL tool: {current_iteration.action}...", flush=True)
                     
                     # Execute the action with real-time feedback
                     observation = await self._execute_action_with_feedback(
@@ -235,7 +243,7 @@ Begin!
                     current_iteration.observation = observation
                     
                     if self.verbose:
-                        print(f"👀 Observation: {observation}")
+                        print(f"👀 REAL Observation from tool: {observation}")
                         print(f"\n{'='*50}")
                         print("🔄 Agent continuing to think...")
                         print(f"{'='*50}")
@@ -250,6 +258,9 @@ Begin!
                 else:
                     # Add response to chat history for continuation
                     self.chat_history.add_assistant_message(response_text)
+                    
+                    if self.verbose:
+                        print("\n⚠️ No action detected - agent may be hallucinating or providing final answer")
                 
             except Exception as e:
                 error_msg = f"Error in iteration {iteration_num + 1}: {str(e)}"
@@ -436,13 +447,20 @@ Begin!
             print(f"⚡ {line}", flush=True)
         elif line.startswith('Action Input:'):
             print(f"📝 {line}", flush=True)
+            print(f"🛑 Stopping LLM generation - about to execute tool...", flush=True)
         elif line.startswith('Final Answer:'):
             print(f"\n✅ {line}", flush=True)
         elif line.startswith('Question:'):
             print(f"\n❓ {line}", flush=True)
+        elif line.startswith('Observation:'):
+            # This should not appear in LLM output anymore, but handle it gracefully
+            print(f"⚠️ LLM generated observation (should not happen): {line}", flush=True)
         else:
-            # Print other content with indentation
-            print(f"   {line}", flush=True)
+            # Print other content with indentation, but warn if it looks like hallucination
+            if any(keyword in line.lower() for keyword in ['observation', 'result:', 'output:']):
+                print(f"⚠️ Possible hallucination: {line}", flush=True)
+            else:
+                print(f"   {line}", flush=True)
     
     def reset(self):
         """Reset the agent's conversation history."""
