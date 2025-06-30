@@ -12,14 +12,14 @@ from semantic_kernel import Kernel
 from semantic_kernel.connectors.ai.google.google_ai import GoogleAIChatCompletion
 
 from .react_agent import ReActAgent
-from .sk_tools import get_sk_plugins
+from .tools import get_plugins
 from .state import get_state, reset_state
 from .rules import get_rule_engine
-from .sk_prompt_utils import generate_sk_prompt_instructions
+from .prompt_utils import generate_prompt_instructions
 
 
-class PolicyEnforcerSKAgent:
-    """Semantic Kernel-based policy enforcer agent with ReAct pattern."""
+class PolicyEnforcerAgent:
+    """Policy enforcer agent with ReAct pattern."""
     
     def __init__(
         self, 
@@ -29,7 +29,7 @@ class PolicyEnforcerSKAgent:
         api_key: Optional[str] = None
     ):
         """
-        Initialize the Semantic Kernel policy enforcer agent.
+        Initialize the policy enforcer agent.
         
         Args:
             model_name: Google AI model name
@@ -41,7 +41,7 @@ class PolicyEnforcerSKAgent:
         self.temperature = temperature
         self.include_rules_in_prompt = include_rules_in_prompt
         
-        # Initialize Semantic Kernel
+        # Initialize kernel
         self.kernel = Kernel()
         
         # Set up Google AI service
@@ -60,13 +60,13 @@ class PolicyEnforcerSKAgent:
         )
         
         # Add plugins (tools)
-        plugins = get_sk_plugins()
+        plugins = get_plugins()
         for plugin in plugins:
             plugin_name = plugin.__class__.__name__.replace("Plugin", "").lower()
             self.kernel.add_plugin(plugin, plugin_name=plugin_name)
         
         # Generate instructions based on mode
-        instructions = generate_sk_prompt_instructions(include_rules_in_prompt)
+        instructions = generate_prompt_instructions(include_rules_in_prompt)
         
         # Create ReAct agent
         self.react_agent = ReActAgent(
@@ -124,14 +124,14 @@ User Request: {user_input}
         return rule_engine.get_rules_summary()
 
 
-def create_sk_agent(
+def create_agent(
     model_name: str = "gemini-1.5-flash", 
     temperature: float = 0.1, 
     include_rules_in_prompt: bool = True,
     api_key: Optional[str] = None
-) -> PolicyEnforcerSKAgent:
+) -> PolicyEnforcerAgent:
     """
-    Create a new Semantic Kernel policy enforcer agent instance.
+    Create a new policy enforcer agent instance.
     
     Args:
         model_name: The name of the Google AI model to use
@@ -141,9 +141,9 @@ def create_sk_agent(
         api_key: Google AI API key (optional if set in environment)
         
     Returns:
-        Configured PolicyEnforcerSKAgent instance
+        Configured PolicyEnforcerAgent instance
     """
-    return PolicyEnforcerSKAgent(
+    return PolicyEnforcerAgent(
         model_name=model_name,
         temperature=temperature,
         include_rules_in_prompt=include_rules_in_prompt,

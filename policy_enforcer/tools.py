@@ -1,8 +1,8 @@
 """
 Semantic Kernel tools/functions for the policy enforcer agent.
 
-This module ports the LangChain tools to Semantic Kernel functions,
-maintaining the same business rule enforcement pattern.
+This module provides Semantic Kernel functions with business rule enforcement,
+maintaining the policy enforcement pattern.
 """
 
 import random
@@ -19,7 +19,7 @@ class PolicyEnforcedPlugin:
     """
     Base class for Semantic Kernel plugins with policy enforcement.
     
-    This replaces the PolicyEnforcedTool pattern from LangChain with
+    This provides the policy enforcement pattern using
     Semantic Kernel's function decoration approach.
     """
     
@@ -173,8 +173,8 @@ class StatePlugin(PolicyEnforcedPlugin):
                 f"🎯 Current Activity: {state.chosen_activity.value if state.chosen_activity else 'None chosen'}")
 
 
-def get_sk_plugins() -> list:
-    """Get all Semantic Kernel plugins for the policy enforcer."""
+def get_plugins() -> list:
+    """Get all plugins for the policy enforcer."""
     return [
         WeatherPlugin(),
         ShoppingPlugin(), 

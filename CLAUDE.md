@@ -6,36 +6,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Core Testing Commands
 ```bash
-# Run all tests with verbose output
-python -m pytest tests/ -v
-
-# Run tests with coverage report
-python -m pytest tests/ --cov=policy_enforcer --cov-report=html --cov-report=term-missing
-
-# Run specific test file
-python -m pytest tests/test_rules.py -v
-
-# Run specific test function
-python -m pytest tests/test_tools.py::TestShoppingTool::test_execute_valid_item -v
-
-# Test Semantic Kernel migration
-python test_sk_migration.py
+# Test plugin functionality
+python test_plugins.py
 ```
 
 ### Running the Application
 ```bash
-# Semantic Kernel version (NEW - recommended)
-python main_sk.py
-
-# Original LangChain version (for comparison)
+# Full agent (requires Google API key)
 python main.py
 
 # Demo mode (no API key required)
 python demo.py
 
-# Ablation study modes for Semantic Kernel
-python main_sk.py --rules        # With explicit rules (default)
-python main_sk.py --no-rules     # Learning mode without upfront rules
+# Ablation study modes
+python main.py --rules        # With explicit rules (default)
+python main.py --no-rules     # Learning mode without upfront rules
 ```
 
 ### Dependency Management

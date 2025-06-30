@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Test script for Semantic Kernel migration.
+Test script for Policy Enforcer plugins.
 
-This script tests the basic functionality of the migrated components
+This script tests the basic functionality of the plugins and business rules
 without requiring a Google API key.
 """
 
@@ -14,9 +14,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from policy_enforcer.state import get_state, reset_state, WeatherCondition, Activity
 from policy_enforcer.rules import get_rule_engine
-from policy_enforcer.sk_tools import get_sk_plugins
+from policy_enforcer.tools import get_plugins
 from policy_enforcer.items import Item
-from policy_enforcer.sk_prompt_utils import generate_sk_prompt_instructions
+from policy_enforcer.prompt_utils import generate_prompt_instructions
 
 
 def test_state_management():
@@ -75,12 +75,12 @@ def test_rules_engine():
     print("✅ Rules engine tests passed!")
 
 
-def test_sk_plugins():
-    """Test Semantic Kernel plugins."""
-    print("🧪 Testing Semantic Kernel Plugins...")
+def test_plugins():
+    """Test plugins."""
+    print("🧪 Testing Plugins...")
     
     reset_state()
-    plugins = get_sk_plugins()
+    plugins = get_plugins()
     
     # Check that we have all expected plugins
     plugin_names = [plugin.__class__.__name__ for plugin in plugins]
@@ -101,7 +101,7 @@ def test_sk_plugins():
     result = shopping_plugin.shopping("InvalidItem")
     assert "Invalid item" in result
     
-    print("✅ Semantic Kernel plugins tests passed!")
+    print("✅ Plugin tests passed!")
 
 
 def test_prompt_generation():
@@ -109,12 +109,12 @@ def test_prompt_generation():
     print("🧪 Testing Prompt Generation...")
     
     # Test with rules
-    prompt_with_rules = generate_sk_prompt_instructions(True)
+    prompt_with_rules = generate_prompt_instructions(True)
     assert "business rules" in prompt_with_rules.lower()
     assert "rule" in prompt_with_rules.lower()
     
     # Test without rules
-    prompt_without_rules = generate_sk_prompt_instructions(False)
+    prompt_without_rules = generate_prompt_instructions(False)
     assert "learn from these failures" in prompt_without_rules.lower()
     assert "infer the underlying business constraints" in prompt_without_rules.lower()
     
@@ -131,7 +131,7 @@ def test_rule_enforcement_in_plugins():
     
     reset_state()
     state = get_state()
-    plugins = get_sk_plugins()
+    plugins = get_plugins()
     
     # Find the activity plugin
     activity_plugin = None
@@ -158,17 +158,17 @@ def test_rule_enforcement_in_plugins():
 
 
 def run_all_tests():
-    """Run all migration tests."""
-    print("🚀 Starting Semantic Kernel Migration Tests...\n")
+    """Run all plugin tests."""
+    print("🚀 Starting Policy Enforcer Plugin Tests...\n")
     
     try:
         test_state_management()
         test_rules_engine()
-        test_sk_plugins()
+        test_plugins()
         test_prompt_generation()
         test_rule_enforcement_in_plugins()
         
-        print("\n🎉 All tests passed! Semantic Kernel migration successful!")
+        print("\n🎉 All tests passed! Policy Enforcer plugins working correctly!")
         return True
         
     except Exception as e:

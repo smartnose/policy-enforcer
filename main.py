@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Policy Enforcer CLI - ReAct Agent Demo with Business Rule Enforcement
+Policy Enforcer CLI - Semantic Kernel ReAct Agent Demo with Business Rule Enforcement
 """
 
 import argparse
@@ -21,11 +21,11 @@ def print_banner(include_rules_mode: bool = True):
 ╔═══════════════════════════════════════════════════════════╗
 ║                    Policy Enforcer Demo                   ║
 ║              ReAct Agent {mode_text:<20} ║
-║                   Powered by Gemini 1.5 Flash            ║
+║                   Powered by Google AI                    ║
 ╚═══════════════════════════════════════════════════════════╝
 
 This demo showcases a ReAct agent that enforces business rules
-when helping users choose activities using Google's Gemini model.
+when helping users choose activities.
 
 Available activities: Play games, Go Camping, Swimming
 Type 'help' for available commands.
@@ -77,7 +77,7 @@ def setup_environment() -> bool:
 def parse_arguments() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
-        description="Policy Enforcer CLI - ReAct Agent Demo with Business Rule Enforcement",
+        description="Policy Enforcer CLI - Semantic Kernel ReAct Agent Demo with Business Rule Enforcement",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Ablation Study Modes:

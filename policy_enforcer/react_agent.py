@@ -1,8 +1,7 @@
 """
 ReAct Agent implementation for Semantic Kernel.
 
-This module implements the ReAct (Reasoning + Acting) pattern using Semantic Kernel,
-since it doesn't have a built-in ReAct agent like LangChain.
+This module implements the ReAct (Reasoning + Acting) pattern using Semantic Kernel.
 """
 
 import asyncio
