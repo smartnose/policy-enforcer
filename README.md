@@ -14,6 +14,7 @@ Note: *Our way of enforcing policy check is independent from LLM-based guardrail
 - **Business Rule Enforcement**: Automatic validation of business rules before tool execution
 - **State Management**: Tracks user inventory, weather conditions, and activity choices
 - **Policy Engine**: Flexible rule system with explainable failures
+- **Ablation Study Support**: Compare agent behavior with/without explicit rules in prompt
 - **Command Line Interface**: Interactive CLI for demonstration
 - **Comprehensive Testing**: 101 unit tests with 86% code coverage
 - **VS Code Integration**: Full debugging and testing support
