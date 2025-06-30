@@ -3,6 +3,7 @@
 Policy Enforcer CLI - ReAct Agent Demo with Business Rule Enforcement
 """
 
+import argparse
 import os
 import sys
 from typing import Optional
@@ -13,12 +14,13 @@ from policy_enforcer.state import get_state, reset_state
 from policy_enforcer.rules import get_rule_engine
 
 
-def print_banner():
+def print_banner(include_rules_mode: bool = True):
     """Print the application banner."""
-    banner = """
+    mode_text = "WITH Business Rules" if include_rules_mode else "WITHOUT Business Rules (Learning Mode)"
+    banner = f"""
 ╔═══════════════════════════════════════════════════════════╗
 ║                    Policy Enforcer Demo                   ║
-║              ReAct Agent with Business Rules              ║
+║              ReAct Agent {mode_text:<20} ║
 ║                   Powered by Gemini 1.5 Flash            ║
 ╚═══════════════════════════════════════════════════════════╝
 
@@ -31,9 +33,10 @@ Type 'help' for available commands.
     print(banner)
 
 
-def print_help():
+def print_help(include_rules_mode: bool = True):
     """Print help information."""
-    help_text = """
+    mode_desc = "explicit rules" if include_rules_mode else "learning mode (no upfront rules)"
+    help_text = f"""
 Available Commands:
   help              - Show this help message
   rules             - Show current business rules
@@ -42,6 +45,8 @@ Available Commands:
   quit/exit         - Exit the application
   
   Or simply type your request to interact with the agent!
+  
+🔬 Ablation Study Mode: Agent running in {mode_desc}
   
 Examples:
   "I want to go camping"
@@ -69,9 +74,65 @@ def setup_environment() -> bool:
     return True
 
 
+def parse_arguments() -> argparse.Namespace:
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Policy Enforcer CLI - ReAct Agent Demo with Business Rule Enforcement",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Ablation Study Modes:
+  --rules (default)     Agent receives explicit business rules in prompt
+  --no-rules           Agent learns rules through tool execution feedback
+
+Examples:
+  python main.py                    # Standard mode with rules
+  python main.py --no-rules         # Learning mode without upfront rules
+  python main.py --rules            # Explicitly enable rules mode
+        """
+    )
+    
+    # Ablation study toggle
+    rules_group = parser.add_mutually_exclusive_group()
+    rules_group.add_argument(
+        '--rules',
+        action='store_true',
+        default=True,
+        help='Include business rules in agent prompt (default)'
+    )
+    rules_group.add_argument(
+        '--no-rules',
+        action='store_true',
+        help='Run agent without upfront rules (learning mode for ablation study)'
+    )
+    
+    # Temperature control
+    parser.add_argument(
+        '--temperature',
+        type=float,
+        default=0.1,
+        help='Model temperature (0.0-1.0, default: 0.1)'
+    )
+    
+    # Model selection
+    parser.add_argument(
+        '--model',
+        type=str,
+        default='gemini-1.5-flash',
+        help='Model name (default: gemini-1.5-flash)'
+    )
+    
+    return parser.parse_args()
+
+
 def main():
     """Main CLI application."""
-    print_banner()
+    # Parse command line arguments
+    args = parse_arguments()
+    
+    # Determine include_rules_in_prompt setting
+    include_rules_in_prompt = not args.no_rules
+    
+    print_banner(include_rules_in_prompt)
     
     # Setup environment
     if not setup_environment():
@@ -80,8 +141,17 @@ def main():
     # Create agent
     print("🚀 Initializing ReAct agent...")
     try:
-        agent = create_agent()
-        print("✅ Agent initialized successfully!")
+        agent = create_agent(
+            model_name=args.model,
+            temperature=args.temperature,
+            include_rules_in_prompt=include_rules_in_prompt
+        )
+        mode_status = "WITH explicit rules" if include_rules_in_prompt else "WITHOUT upfront rules (learning mode)"
+        print(f"✅ Agent initialized successfully in {mode_status}!")
+        
+        if not include_rules_in_prompt:
+            print("🔬 Ablation Study: Agent will learn rules through tool execution feedback")
+        
         print()
     except Exception as e:
         print(f"❌ Failed to initialize agent: {e}")
@@ -100,7 +170,7 @@ def main():
                 print("👋 Goodbye!")
                 break
             elif user_input.lower() == 'help':
-                print_help()
+                print_help(include_rules_in_prompt)
                 continue
             elif user_input.lower() == 'rules':
                 print("📜 " + agent.show_rules())
