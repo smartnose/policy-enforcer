@@ -93,7 +93,8 @@ class ReActAgent:
             kernel=kernel,
             name=f"{name}_Reasoning",
             instructions=self._build_react_prompt(),
-            service=service
+            service=service,
+            function_choice_behavior=self.settings.function_choice_behavior
         )
         
         # Chat history for conversation context
@@ -104,8 +105,8 @@ class ReActAgent:
         settings = GoogleAIPromptExecutionSettings()
         settings.max_output_tokens = 4000
         settings.temperature = 0.1
-        # Disable automatic function calling - we'll handle it manually for ReAct
-        settings.function_choice_behavior = FunctionChoiceBehavior.NoneInvoke()
+        # Enable automatic function calling for ReAct
+        settings.function_choice_behavior = FunctionChoiceBehavior.Auto()
         return settings
     
     def _build_react_prompt(self) -> str:
@@ -185,7 +186,8 @@ Begin!
         
         # Add the question to start the ReAct process
         full_question = f"Question: {question}"
-        self.chat_history.add_user_message(full_question)
+        if full_question.strip():  # Ensure content is not empty
+            self.chat_history.add_user_message(full_question)
         
         iterations = []
         current_iteration = ReActIteration()
@@ -195,15 +197,25 @@ Begin!
                 print(f"\n🔄 Iteration {iteration_num + 1}/{self.max_iterations}")
             
             try:
+                # Get the latest message to send
+                if len(self.chat_history) > 0:
+                    last_message = self.chat_history[-1]
+                    message_content = last_message.content
+                else:
+                    message_content = full_question
+                
                 # Get response from reasoning agent
                 response_stream = self.reasoning_agent.invoke(
-                    chat_history=self.chat_history
+                    messages=message_content
                 )
                 
                 # Collect the response from the async generator
                 response = []
-                async for message in response_stream:
-                    response.append(message)
+                async for item in response_stream:
+                    if hasattr(item, 'content'):
+                        response.append(item.content)
+                    else:
+                        response.append(item)
                 
                 if not response:
                     break
