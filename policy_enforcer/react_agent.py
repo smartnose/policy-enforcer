@@ -86,12 +86,14 @@ class ReActAgent:
         self.settings = self._get_execution_settings()
         
         # Create chat completion agent for reasoning
+        # Get the service from kernel
+        service = kernel.get_service(service_id)
+        
         self.reasoning_agent = ChatCompletionAgent(
             kernel=kernel,
             name=f"{name}_Reasoning",
             instructions=self._build_react_prompt(),
-            service_id=service_id,
-            execution_settings=self.settings
+            service=service
         )
         
         # Chat history for conversation context
@@ -109,7 +111,7 @@ class ReActAgent:
     def _build_react_prompt(self) -> str:
         """Build the ReAct prompt template."""
         # Get available functions from kernel
-        functions = self.kernel.get_functions_metadata()
+        functions = self.kernel.get_full_list_of_function_metadata()
         tool_descriptions = []
         tool_names = []
         
@@ -194,9 +196,14 @@ Begin!
             
             try:
                 # Get response from reasoning agent
-                response = await self.reasoning_agent.invoke(
+                response_stream = self.reasoning_agent.invoke(
                     chat_history=self.chat_history
                 )
+                
+                # Collect the response from the async generator
+                response = []
+                async for message in response_stream:
+                    response.append(message)
                 
                 if not response:
                     break
