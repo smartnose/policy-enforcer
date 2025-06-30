@@ -103,42 +103,34 @@ Run the demo:
 python main.py
 ```
 
-## Example Output
+## Example interactions
 
-```
-👤 You: I want to go camping
-🤖 Agent: I'll help you go camping! Let me first check what you need...
+To illustrate the LLM reasoning capabilities, I've created two variations in the prompt: (1) business rules are explicitly rendered upfront in the prompt and 
+(2) business rules are hidden and only partially revealed during tool calling results.
 
-Action: check_weather
-Action Input: {}
-Observation: 🌤️ Weather check complete! Current weather: sunny
+In practice, we should try to be upfront and give the LLM clear upfront instructions about business rules. Here, I deliberately hide the business rules mainly to demonstrate
+that the ReAct agent is often robust enough to recover from policy check errors, even when the prompt is not ideal and it is bound to fail occasionally.
 
-Action: shopping  
-Action Input: {"item": "Hiking Boots"}
-Observation: 🛒 Successfully purchased: Hiking Boots. Added to inventory!
+### Explicit rules - happy path (user chooses to go camping)
+In this case, the LLM is given an explanation of the business rules, the weather condition is perfect, and it is able to plan and execute without issues.
 
-Action: choose_activity
-Action Input: {"activity": "Go Camping"}  
-Observation: 🎯 Activity chosen: Go Camping! Have fun!
 
-🤖 Agent: Perfect! I've checked the weather (it's sunny), purchased the required hiking boots for you, and successfully selected camping as your activity. You're all set to go camping!
-```
+![go-camping-happy-path](./pics/go-camping-happy-path.png)
 
-### Example Interactions
+### Explicit rules - recovering from policy violation
+In this case, the LLM is given explicit rules. However, it had to recover from multiple errors:
+1. The user asked to go hiking (not exactly camping), but the agent is able to map it to the closest option (go camping)
+2. The agent failed to follow the instructions and violated the rules during a tool call, but it is able to learn from tool call failures and replan.
 
-```
-👤 You: I want to go camping
-🤖 Agent: I'll help you go camping! Let me first check what you need and the current conditions...
 
-👤 You: Check the weather
-🤖 Agent: Weather check complete! Current weather: sunny
+![go-hiking-on-a-rainy-day](./pics/go-hiking-on-a-rainy-day.png)
 
-👤 You: Buy hiking boots
-🤖 Agent: Successfully purchased: Hiking Boots. Added to inventory!
 
-👤 You: Now I want to go camping
-🤖 Agent: Activity chosen: Go Camping! Have fun!
-```
+### Implicit business rules
+Here, the LLM does not have clues upfront about the business rules, but is able to work through the failures.
+
+
+![hidden-business-rules](./pics/hidden-business-rules.png)
 
 ### CLI Commands
 
