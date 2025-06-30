@@ -204,6 +204,9 @@ Begin!
                     message_content = full_question
                 
                 # Get response from reasoning agent
+                if self.verbose:
+                    print("🧠 Agent thinking...", flush=True)
+                
                 response_stream = self.reasoning_agent.invoke(
                     messages=message_content
                 )
@@ -222,7 +225,8 @@ Begin!
                 response_text = str(response[-1].content) if response else ""
                 
                 if self.verbose:
-                    print(f"🧠 Agent Response:\n{response_text}")
+                    # Parse and display the response step by step
+                    self._display_thinking_process(response_text)
                 
                 # Parse the response to extract ReAct components
                 final_answer = self._parse_response(response_text, current_iteration)
@@ -234,6 +238,9 @@ Begin!
                 
                 # If we have an action to execute
                 if current_iteration.action and current_iteration.action_input is not None:
+                    if self.verbose:
+                        print(f"🔄 Executing action: {current_iteration.action}...", flush=True)
+                    
                     # Execute the action
                     observation = await self._execute_action(
                         current_iteration.action,
@@ -243,6 +250,7 @@ Begin!
                     
                     if self.verbose:
                         print(f"👀 Observation: {observation}")
+                        print()  # Add spacing between iterations
                     
                     # Add observation to chat history
                     self.chat_history.add_assistant_message(response_text)
@@ -352,6 +360,33 @@ Begin!
             
         except Exception as e:
             return f"❌ Error executing action {action}: {str(e)}"
+    
+    def _display_thinking_process(self, response_text: str):
+        """Display the thinking process step by step."""
+        import time
+        
+        lines = response_text.strip().split('\n')
+        
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+                
+            if line.startswith('Thought:'):
+                print(f"💭 {line}", flush=True)
+                time.sleep(0.5)  # Small delay for dramatic effect
+            elif line.startswith('Action:'):
+                print(f"⚡ {line}", flush=True)
+                time.sleep(0.3)
+            elif line.startswith('Action Input:'):
+                print(f"📝 {line}", flush=True)
+                time.sleep(0.3)
+            elif line.startswith('Final Answer:'):
+                print(f"✅ {line}", flush=True)
+                time.sleep(0.3)
+            else:
+                # Print other content without delay
+                print(f"   {line}", flush=True)
     
     def reset(self):
         """Reset the agent's conversation history."""
