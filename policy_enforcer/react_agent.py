@@ -203,7 +203,7 @@ Begin!
                 else:
                     message_content = full_question
                 
-                # Get response from reasoning agent
+                # Get response from reasoning agent with real-time streaming
                 if self.verbose:
                     print("🧠 Agent thinking...", flush=True)
                 
@@ -211,22 +211,8 @@ Begin!
                     messages=message_content
                 )
                 
-                # Collect the response from the async generator
-                response = []
-                async for item in response_stream:
-                    if hasattr(item, 'content'):
-                        response.append(item.content)
-                    else:
-                        response.append(item)
-                
-                if not response:
-                    break
-                
-                response_text = str(response[-1].content) if response else ""
-                
-                if self.verbose:
-                    # Parse and display the response step by step
-                    self._display_thinking_process(response_text)
+                # Stream the response in real-time
+                response_text = await self._stream_thinking_process(response_stream)
                 
                 # Parse the response to extract ReAct components
                 final_answer = self._parse_response(response_text, current_iteration)
@@ -239,10 +225,10 @@ Begin!
                 # If we have an action to execute
                 if current_iteration.action and current_iteration.action_input is not None:
                     if self.verbose:
-                        print(f"🔄 Executing action: {current_iteration.action}...", flush=True)
+                        print(f"\n🔄 Executing action: {current_iteration.action}...", flush=True)
                     
-                    # Execute the action
-                    observation = await self._execute_action(
+                    # Execute the action with real-time feedback
+                    observation = await self._execute_action_with_feedback(
                         current_iteration.action,
                         current_iteration.action_input
                     )
@@ -250,7 +236,9 @@ Begin!
                     
                     if self.verbose:
                         print(f"👀 Observation: {observation}")
-                        print()  # Add spacing between iterations
+                        print(f"\n{'='*50}")
+                        print("🔄 Agent continuing to think...")
+                        print(f"{'='*50}")
                     
                     # Add observation to chat history
                     self.chat_history.add_assistant_message(response_text)
@@ -315,6 +303,35 @@ Begin!
         
         return None
     
+    async def _execute_action_with_feedback(self, action: str, action_input: Dict[str, Any]) -> str:
+        """Execute action with real-time feedback display."""
+        if self.verbose:
+            print(f"\n📋 Preparing to call: {action}")
+            print(f"📝 With parameters: {action_input}")
+            
+            # Show current state before action
+            from .state import get_state
+            state = get_state()
+            print(f"📊 Current state before action:")
+            print(f"   🎒 Inventory: {', '.join(sorted(state.inventory)) if state.inventory else 'Empty'}")
+            print(f"   🌤️ Weather: {state.weather.value}")
+            print(f"   🎯 Activity: {state.chosen_activity.value if state.chosen_activity else 'None'}")
+            print()
+        
+        result = await self._execute_action(action, action_input)
+        
+        if self.verbose:
+            print(f"✅ Action completed")
+            
+            # Show state changes after action
+            state = get_state()
+            print(f"📊 Updated state after action:")
+            print(f"   🎒 Inventory: {', '.join(sorted(state.inventory)) if state.inventory else 'Empty'}")
+            print(f"   🌤️ Weather: {state.weather.value}")
+            print(f"   🎯 Activity: {state.chosen_activity.value if state.chosen_activity else 'None'}")
+        
+        return result
+    
     async def _execute_action(self, action: str, action_input: Dict[str, Any]) -> str:
         """
         Execute a tool action.
@@ -361,32 +378,71 @@ Begin!
         except Exception as e:
             return f"❌ Error executing action {action}: {str(e)}"
     
-    def _display_thinking_process(self, response_text: str):
-        """Display the thinking process step by step."""
-        import time
+    async def _stream_thinking_process(self, response_stream):
+        """Stream the agent's thinking process in real-time."""
+        response_parts = []
+        accumulated_content = ""
         
-        lines = response_text.strip().split('\n')
-        
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
+        async for item in response_stream:
+            try:
+                if hasattr(item, 'content'):
+                    content = str(item.content) if item.content is not None else ""
+                    response_parts.append(content)
+                else:
+                    content = str(item) if item is not None else ""
+                    response_parts.append(content)
                 
-            if line.startswith('Thought:'):
-                print(f"💭 {line}", flush=True)
-                time.sleep(0.5)  # Small delay for dramatic effect
-            elif line.startswith('Action:'):
-                print(f"⚡ {line}", flush=True)
-                time.sleep(0.3)
-            elif line.startswith('Action Input:'):
-                print(f"📝 {line}", flush=True)
-                time.sleep(0.3)
-            elif line.startswith('Final Answer:'):
-                print(f"✅ {line}", flush=True)
-                time.sleep(0.3)
-            else:
-                # Print other content without delay
-                print(f"   {line}", flush=True)
+                if self.verbose and content:
+                    accumulated_content += content  # Now guaranteed to be string
+                    
+                    # Process complete lines as they come in (real-time)
+                    lines = accumulated_content.split('\n')
+                    
+                    # Process all complete lines except the last (potentially incomplete) one
+                    for line in lines[:-1]:
+                        if line.strip():
+                            self._display_line_real_time(line.strip())
+                    
+                    # Keep the last potentially incomplete line for next iteration
+                    accumulated_content = lines[-1] if lines else ""
+                    
+                    # Small delay for natural streaming effect
+                    import asyncio
+                    await asyncio.sleep(0.05)
+                    
+            except Exception as e:
+                # Handle any unexpected content types gracefully
+                content = f"[Error processing content: {str(e)}]"
+                response_parts.append(content)
+                if self.verbose:
+                    print(f"⚠️ Warning: {content}", flush=True)
+        
+        # Process any remaining content
+        if accumulated_content.strip():
+            self._display_line_real_time(accumulated_content.strip())
+        
+        # Return the complete response (all parts are already strings now)
+        complete_response = ''.join(response_parts)
+        return complete_response
+    
+    def _display_line_real_time(self, line: str):
+        """Display a line of thinking in real-time with appropriate formatting."""
+        if not line:
+            return
+            
+        if line.startswith('Thought:'):
+            print(f"\n💭 {line}", flush=True)
+        elif line.startswith('Action:'):
+            print(f"⚡ {line}", flush=True)
+        elif line.startswith('Action Input:'):
+            print(f"📝 {line}", flush=True)
+        elif line.startswith('Final Answer:'):
+            print(f"\n✅ {line}", flush=True)
+        elif line.startswith('Question:'):
+            print(f"\n❓ {line}", flush=True)
+        else:
+            # Print other content with indentation
+            print(f"   {line}", flush=True)
     
     def reset(self):
         """Reset the agent's conversation history."""
