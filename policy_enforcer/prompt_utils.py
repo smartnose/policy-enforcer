@@ -26,7 +26,7 @@ def generate_prompt_template(include_rules: bool = True) -> str:
         include_rules: Whether to include business rules in the prompt
         
     Returns:
-        The fully rendered prompt template string
+        The fully rendered prompt template string with placeholders for LangChain
     """
     # Get rule descriptions for the prompt (if enabled)
     rule_engine = get_rule_engine()
@@ -62,11 +62,6 @@ IMPORTANT: Business rules are enforced automatically during tool execution. You 
 7. Remember that your actions have persistent effects - purchased items stay in inventory
 8. Use trial and observation to infer business rules when they're not explicitly provided"""
     
-    # Get tools for rendering
-    tools = get_tools()
-    tool_descriptions = "\n".join([f"{tool.name}: {tool.description}" for tool in tools])
-    tool_names = ", ".join([tool.name for tool in tools])
-    
     prompt_template = f"""
 You are a helpful assistant that helps users choose activities. You have access to tools that allow you to check weather, shop for items, choose activities, and check current state.
 {rules_section}
@@ -79,15 +74,15 @@ CRITICAL: STATE AWARENESS INSTRUCTIONS:
 - Always consider the CURRENT state when making decisions, not just the initial state
 
 Available Tools:
-{tool_descriptions}
+{{tools}}
 
-Tool Names: {tool_names}
+Tool Names: {{tool_names}}
 
 Tool Input Format:
 Use the following format when calling tools:
 
 Action: tool_name
-Action Input: {{"parameter": "value"}}
+Action Input: {{{{"parameter": "value"}}}}
 
 {instructions_section}
 
@@ -95,7 +90,7 @@ Use the following format:
 
 Question: the input question you must answer
 Thought: you should always think about what to do
-Action: the action to take, should be one of [{tool_names}]
+Action: the action to take, should be one of [{{tool_names}}]
 Action Input: the input to the action
 Observation: the result of the action
 ... (this Thought/Action/Action Input/Observation can repeat N times)
@@ -104,10 +99,38 @@ Final Answer: the final answer to the original input question
 
 Begin!
 
-Question: {{{{input}}}}
-Thought: {{{{agent_scratchpad}}}}"""
+Question: {{input}}
+Thought: {{agent_scratchpad}}"""
     
     return prompt_template
+
+
+def generate_prompt_with_tools(include_rules: bool = True) -> str:
+    """
+    Generate a fully rendered prompt template with tools filled in.
+    Used for export utilities and comparison reports.
+    
+    Args:
+        include_rules: Whether to include business rules in the prompt
+        
+    Returns:
+        The fully rendered prompt template string with tools filled in
+    """
+    # Get the base template
+    template = generate_prompt_template(include_rules)
+    
+    # Get tools and fill them in
+    tools = get_tools()
+    tool_descriptions = "\n".join([f"{tool.name}: {tool.description}" for tool in tools])
+    tool_names = ", ".join([tool.name for tool in tools])
+    
+    # Replace placeholders with actual content
+    filled_template = template.replace("{{tools}}", tool_descriptions)
+    filled_template = filled_template.replace("{{tool_names}}", tool_names)
+    filled_template = filled_template.replace("{{input}}", "{input}")
+    filled_template = filled_template.replace("{{agent_scratchpad}}", "{agent_scratchpad}")
+    
+    return filled_template
 
 
 def save_prompt_to_file(include_rules: bool, output_file: str) -> str:
@@ -125,7 +148,7 @@ def save_prompt_to_file(include_rules: bool, output_file: str) -> str:
     reset_state()
     
     # Generate prompt
-    prompt_content = generate_prompt_template(include_rules)
+    prompt_content = generate_prompt_with_tools(include_rules)
     
     # Ensure output directory exists
     os.makedirs(os.path.dirname(output_file) if os.path.dirname(output_file) else '.', exist_ok=True)
@@ -150,8 +173,8 @@ def compare_prompts() -> Dict[str, Any]:
     """
     reset_state()
     
-    prompt_with_rules = generate_prompt_template(True)
-    prompt_without_rules = generate_prompt_template(False)
+    prompt_with_rules = generate_prompt_with_tools(True)
+    prompt_without_rules = generate_prompt_with_tools(False)
     
     return {
         'with_rules': prompt_with_rules,
