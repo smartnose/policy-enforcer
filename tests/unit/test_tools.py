@@ -41,8 +41,8 @@ class TestShoppingPlugin:
         result = plugin.shopping("tv")
         
         state = get_state()
-        assert "TV" in state.inventory
-        assert "Successfully purchased: TV" in result
+        assert "TV" in state.inventory  # Inventory stores normalized name
+        assert "Successfully purchased: tv" in result  # Result shows original input
 
 
 class TestActivityPlugin:
@@ -92,7 +92,7 @@ class TestActivityPlugin:
         result = plugin.choose_activity("Invalid Activity")
         
         assert "Invalid activity" in result
-        assert "Available activities:" in result
+        assert "Choose from:" in result
 
 
 class TestWeatherPlugin:
@@ -200,29 +200,31 @@ class TestPluginRuleIntegration:
         plugin = ActivityPlugin()
         state = get_state()
         
-        # Test rule checking
-        rule_result = plugin.check_activity_rules(Activity.PLAY_GAMES, state)
-        assert rule_result.allowed is False  # Missing TV and Xbox
+        # Test rule checking - check_activity_rules returns violation string or None
+        rule_violation = plugin.check_activity_rules(Activity.PLAY_GAMES.value)
+        assert rule_violation is not None  # Should have violation for missing items
+        assert "TV" in rule_violation or "Xbox" in rule_violation
         
         # Add required items
         state.add_to_inventory("TV")
         state.add_to_inventory("Xbox")
         
-        rule_result = plugin.check_activity_rules(Activity.PLAY_GAMES, state)
-        assert rule_result.allowed is True
+        rule_violation = plugin.check_activity_rules(Activity.PLAY_GAMES.value)
+        assert rule_violation is None  # No violation when items are present
     
     def test_weather_plugin_rule_integration(self):
         """Test weather plugin integrates with rule engine."""
         plugin = WeatherPlugin()
         state = get_state()
         
-        # Test rule checking - should be allowed initially
-        rule_result = plugin.check_tool_rules("check_weather", state)
-        assert rule_result.allowed is True
+        # Test rule checking - check_tool_rules returns violation string or None
+        rule_violation = plugin.check_tool_rules("check_weather")
+        assert rule_violation is None  # Should be allowed initially
         
         # Check weather
         plugin.check_weather()
         
         # Test rule checking - should be blocked now
-        rule_result = plugin.check_tool_rules("check_weather", state)
-        assert rule_result.allowed is False
+        rule_violation = plugin.check_tool_rules("check_weather")
+        assert rule_violation is not None  # Should have violation
+        assert "already been checked" in rule_violation

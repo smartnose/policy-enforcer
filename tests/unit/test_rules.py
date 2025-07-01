@@ -28,7 +28,7 @@ class TestRuleEngine:
         result = engine.check_activity_rules(state, Activity.PLAY_GAMES.value)
         
         assert result.allowed is True
-        assert result.message == "✅ Activity 'Play games' is allowed"
+        assert result.reason is None  # No reason when allowed
     
     def test_check_gaming_rules_missing_tv(self):
         """Test gaming rules when TV is missing."""
@@ -39,7 +39,7 @@ class TestRuleEngine:
         result = engine.check_activity_rules(state, Activity.PLAY_GAMES.value)
         
         assert result.allowed is False
-        assert "TV" in result.message
+        assert "TV" in result.reason
     
     def test_check_gaming_rules_missing_xbox(self):
         """Test gaming rules when Xbox is missing."""
@@ -50,7 +50,7 @@ class TestRuleEngine:
         result = engine.check_activity_rules(state, Activity.PLAY_GAMES.value)
         
         assert result.allowed is False
-        assert "Xbox" in result.message
+        assert "Xbox" in result.reason
     
     def test_check_camping_rules_success(self):
         """Test camping rules when conditions are met."""
@@ -62,7 +62,7 @@ class TestRuleEngine:
         result = engine.check_activity_rules(state, Activity.GO_CAMPING.value)
         
         assert result.allowed is True
-        assert result.message == "✅ Activity 'Go Camping' is allowed"
+        assert result.reason is None  # No reason when allowed
     
     def test_check_camping_rules_missing_boots(self):
         """Test camping rules when hiking boots are missing."""
@@ -73,7 +73,7 @@ class TestRuleEngine:
         result = engine.check_activity_rules(state, Activity.GO_CAMPING.value)
         
         assert result.allowed is False
-        assert "Hiking Boots" in result.message
+        assert "Hiking Boots" in result.reason
     
     def test_check_camping_rules_bad_weather(self):
         """Test camping rules when weather is raining."""
@@ -85,7 +85,7 @@ class TestRuleEngine:
         result = engine.check_activity_rules(state, Activity.GO_CAMPING.value)
         
         assert result.allowed is False
-        assert "raining" in result.message
+        assert "raining" in result.reason
     
     def test_check_swimming_rules_success(self):
         """Test swimming rules when conditions are met."""
@@ -97,7 +97,7 @@ class TestRuleEngine:
         result = engine.check_activity_rules(state, Activity.SWIMMING.value)
         
         assert result.allowed is True
-        assert result.message == "✅ Activity 'Swimming' is allowed"
+        assert result.reason is None  # No reason when allowed
     
     def test_check_swimming_rules_missing_goggles(self):
         """Test swimming rules when goggles are missing."""
@@ -108,7 +108,7 @@ class TestRuleEngine:
         result = engine.check_activity_rules(state, Activity.SWIMMING.value)
         
         assert result.allowed is False
-        assert "Goggles" in result.message
+        assert "Goggles" in result.reason
     
     def test_check_swimming_rules_bad_weather(self):
         """Test swimming rules when weather is snowing."""
@@ -120,7 +120,7 @@ class TestRuleEngine:
         result = engine.check_activity_rules(state, Activity.SWIMMING.value)
         
         assert result.allowed is False
-        assert "snowing" in result.message
+        assert "snowing" in result.reason
     
     def test_unknown_weather_restriction(self):
         """Test that only gaming is allowed with unknown weather."""
@@ -132,7 +132,7 @@ class TestRuleEngine:
         result = engine.check_activity_rules(state, Activity.GO_CAMPING.value)
         
         assert result.allowed is False
-        assert "unknown" in result.message
+        assert "unknown" in result.reason
     
     def test_weather_tool_rules_success(self):
         """Test weather tool can be called when weather is unknown."""
@@ -153,7 +153,7 @@ class TestRuleEngine:
         result = engine.check_tool_rules(state, "check_weather")
         
         assert result.allowed is False
-        assert "already been checked" in result.message
+        assert "already been checked" in result.reason
     
     def test_get_rules_summary(self):
         """Test getting rules summary."""
@@ -169,13 +169,16 @@ class TestRuleEngine:
         assert "unknown" in summary
     
     def test_unknown_activity(self):
-        """Test handling of unknown activity."""
+        """Test handling of unknown activity with unknown weather."""
         state = get_state()
         engine = get_rule_engine()
         
-        # Create a mock activity that doesn't exist
-        class MockActivity:
-            value = "Unknown Activity"
-        
+        # Unknown activities are blocked when weather is unknown (only gaming allowed)
         result = engine.check_activity_rules(state, "Unknown Activity")
-        assert result.allowed is True  # Should allow unknown activities
+        assert result.allowed is False
+        assert "unknown" in result.reason  # Weather restriction applies
+        
+        # But unknown activities should be allowed when weather is known
+        state.set_weather(WeatherCondition.SUNNY)
+        result = engine.check_activity_rules(state, "Unknown Activity")
+        assert result.allowed is True

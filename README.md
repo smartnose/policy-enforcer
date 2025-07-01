@@ -1,6 +1,8 @@
 # Policy Enforcer
 
-A sophisticated ReAct agent showcasing business rule enforcement in autonomous AI agents using Semantic Kernel with OpenAI integration and comprehensive testing infrastructure.
+A ReAct agent using Semantic Kernel showcasing business rule enforcement in autonomous AI agents using Semantic Kernel with OpenAI integration and comprehensive testing infrastructure.
+
+For Langchain version, refer to [this repo](https://github.com/smartnose/policy-enforcer)
 
 ## Overview
 
@@ -10,7 +12,7 @@ This project demonstrates how to build an AI agent that enforces business rules 
 
 ## 🚀 Key Features
 
-- **🤖 Dual Agent Architecture**: Both Semantic Kernel + OpenAI and direct OpenAI implementations
+- **🤖 Dual Agent Architecture**: Both Semantic Kernel + OpenAI chat completion (gpt-4o-mini)
 - **📋 Business Rule Enforcement**: Automatic validation of business rules before tool execution
 - **📊 State Management**: Tracks user inventory, weather conditions, and activity choices
 - **⚖️ Policy Engine**: Flexible rule system with explainable failures
@@ -137,35 +139,177 @@ python main.py --model gpt-4 --temperature 0.5
 ```
 ╔═══════════════════════════════════════════════════════════╗
 ║                    Policy Enforcer Demo                   ║
-║              ReAct Agent WITH Business Rules              ║
+║              ReAct Agent WITH Business Rules  ║
 ║                   Powered by OpenAI                       ║
 ╚═══════════════════════════════════════════════════════════╝
 
-✅ OpenAI API key loaded successfully
+This demo showcases a ReAct agent that enforces business rules
+when helping users choose activities.
+
+Available activities: Play games, Go Camping, Swimming
+Type 'help' for available commands.
+
+✅ OpenAI API key loaded successfully (length: 164 chars)
 🚀 Initializing ReAct agent...
-✅ Agent initialized successfully with model: gpt-4o-mini!
+✅ Agent initialized successfully in WITH explicit rules!
 
-👤 You: I want to play games
+👤 You: play games
+🤖 Agent: Thinking...
 
-🤖 Agent working...
-💭 Thought: I need to check what items the user has for playing games...
-⚡ Action: state.check_state
-👀 Observation: Current inventory is empty
+🤖 PolicyEnforcer starting ReAct process...
+❓ Question: Current State:
+Inventory: Empty
+Weather: unknown
+Weather checked: False
 
-💭 Thought: To play games, the user needs a TV and Xbox. Let me buy these items.
-⚡ Action: shopping.shopping  
-📝 Action Input: {"item": "TV"}
-👀 Tool result: Successfully purchased: TV
+User Request: play games
 
-⚡ Action: shopping.shopping
-📝 Action Input: {"item": "Xbox"} 
-👀 Tool result: Successfully purchased: Xbox
+🔄 Iteration 1/10
+🧠 Agent thinking...
+📚 2 messages in context
+🔍 Sending 2 messages, first: '
 
+You are a helpful assistant that helps users choose activi...'
+
+💭 Thought: Since the weather is unknown, the user can only play games. I will proceed to choose the activity of playing games.
 ⚡ Action: activity.choose_activity
-📝 Action Input: {"activity": "Play games"}
-👀 Tool result: Activity chosen: Play games! Have fun!
+📝 Action Input: {"activity":"Play games"}
 
-🤖 Agent: Great! I've helped you get set up for gaming. I purchased a TV and Xbox for you, and now you're all set to play games! Enjoy your gaming session!
+🔍 Action detected: activity.choose_activity
+
+🔄 Executing tool: activity.choose_activity...
+
+📋 Preparing to call: activity.choose_activity
+📝 With parameters: {'activity': 'Play games'}
+📊 Current state before action:
+   🎒 Inventory: Empty
+   🌤️ Weather: unknown
+   🎯 Activity: None
+
+✅ Action completed
+📊 Updated state after action:
+   🎒 Inventory: Empty
+   🌤️ Weather: unknown
+   🎯 Activity: None
+👀 Observation: ❌ Rule violation: Cannot play games. Missing required items: TV, Xbox
+
+==================================================
+🔄 Agent continuing to think...
+==================================================
+
+🔄 Iteration 2/10
+🧠 Agent thinking...
+📚 4 messages in context
+🔍 Sending 4 messages, first: '
+
+You are a helpful assistant that helps users choose activi...'
+
+💭 Thought: The user cannot play games because they do not have a TV and an Xbox. I need to help the user acquire these items first. I will start by purchasing a TV.
+⚡ Action: shopping.shopping
+📝 Action Input: {"item":"TV"}
+
+🔍 Action detected: shopping.shopping
+
+🔄 Executing tool: shopping.shopping...
+
+📋 Preparing to call: shopping.shopping
+📝 With parameters: {'item': 'TV'}
+📊 Current state before action:
+   🎒 Inventory: Empty
+   🌤️ Weather: unknown
+   🎯 Activity: None
+
+✅ Action completed
+📊 Updated state after action:
+   🎒 Inventory: TV
+   🌤️ Weather: unknown
+   🎯 Activity: None
+👀 Observation: 🛒 Successfully purchased: TV. Added to inventory!
+📊 Current inventory: TV
+
+==================================================
+🔄 Agent continuing to think...
+==================================================
+
+🔄 Iteration 3/10
+🧠 Agent thinking...
+📚 6 messages in context
+🔍 Sending 6 messages, first: '
+
+You are a helpful assistant that helps users choose activi...'
+
+💭 Thought: The user now has a TV, but they still need an Xbox to play games. I will proceed to purchase an Xbox next.
+⚡ Action: shopping.shopping
+📝 Action Input: {"item":"Xbox"}
+
+🔍 Action detected: shopping.shopping
+
+🔄 Executing tool: shopping.shopping...
+
+📋 Preparing to call: shopping.shopping
+📝 With parameters: {'item': 'Xbox'}
+📊 Current state before action:
+   🎒 Inventory: TV
+   🌤️ Weather: unknown
+   🎯 Activity: None
+
+✅ Action completed
+📊 Updated state after action:
+   🎒 Inventory: TV, Xbox
+   🌤️ Weather: unknown
+   🎯 Activity: None
+👀 Observation: 🛒 Successfully purchased: Xbox. Added to inventory!
+📊 Current inventory: TV, Xbox
+
+==================================================
+🔄 Agent continuing to think...
+==================================================
+
+🔄 Iteration 4/10
+🧠 Agent thinking...
+📚 8 messages in context
+🔍 Sending 8 messages, first: '
+
+You are a helpful assistant that helps users choose activi...'
+
+💭 Thought: The user now has both a TV and an Xbox, which means they can play games. I will now choose the activity of playing games.
+⚡ Action: activity.choose_activity
+📝 Action Input: {"activity":"Play games"}
+
+🔍 Action detected: activity.choose_activity
+
+🔄 Executing tool: activity.choose_activity...
+
+📋 Preparing to call: activity.choose_activity
+📝 With parameters: {'activity': 'Play games'}
+📊 Current state before action:
+   🎒 Inventory: TV, Xbox
+   🌤️ Weather: unknown
+   🎯 Activity: None
+
+✅ Action completed
+📊 Updated state after action:
+   🎒 Inventory: TV, Xbox
+   🌤️ Weather: unknown
+   🎯 Activity: Play games
+👀 Observation: 🎯 Activity chosen: Play games! Have fun!
+📊 Current activity: Play games
+📊 Current inventory: TV, Xbox
+
+==================================================
+🔄 Agent continuing to think...
+==================================================
+
+🔄 Iteration 5/10
+🧠 Agent thinking...
+📚 10 messages in context
+🔍 Sending 10 messages, first: '
+
+You are a helpful assistant that helps users choose activi...'
+
+✅ Final Answer: You are all set to play games! Enjoy your time with your TV and Xbox! If you need anything else, feel free to ask.
+✅ Final Answer: You are all set to play games! Enjoy your time with your TV and Xbox! If you need anything else, feel free to ask.
+🤖 Agent: You are all set to play games! Enjoy your time with your TV and Xbox! If you need anything else, feel free to ask.
 ```
 
 ### 🎛️ CLI Commands
@@ -402,24 +546,6 @@ python main.py --no-rules
 - [OpenAI Function Calling Guide](https://platform.openai.com/docs/guides/function-calling)
 - [ReAct Paper](https://arxiv.org/abs/2210.03629)
 - [Business Rule Management Systems](https://en.wikipedia.org/wiki/Business_rule_management_system)
-
-## 📋 Requirements
-
-### Runtime Requirements
-- **Python**: 3.8+ (tested on 3.13)
-- **OpenAI API Key**: For full agent functionality
-- **Dependencies**: See `requirements.txt`
-
-### Development Requirements  
-- **pytest**: 7.0+ for running tests
-- **pytest-cov**: 4.0+ for coverage reports
-- **pytest-asyncio**: 0.21+ for async test support
-- **pytest-mock**: 3.10+ for mocking
-
-### System Requirements
-- **Memory**: 512MB+ available RAM
-- **Storage**: 100MB+ free space
-- **Network**: Internet access for OpenAI API
 
 ## 📄 License
 
