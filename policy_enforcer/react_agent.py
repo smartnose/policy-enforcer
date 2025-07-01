@@ -12,9 +12,8 @@ from dataclasses import dataclass
 from enum import Enum
 
 from semantic_kernel import Kernel
-from semantic_kernel.agents import ChatCompletionAgent
-from semantic_kernel.connectors.ai import FunctionChoiceBehavior
-from semantic_kernel.connectors.ai.google.google_ai import GoogleAIChatCompletion, GoogleAIPromptExecutionSettings
+from semantic_kernel.connectors.ai.open_ai import OpenAIChatCompletion
+from semantic_kernel.connectors.ai.open_ai.prompt_execution_settings.open_ai_prompt_execution_settings import OpenAIChatPromptExecutionSettings
 from semantic_kernel.contents import ChatHistory, ChatMessageContent
 from semantic_kernel.functions import KernelArguments
 
@@ -57,7 +56,7 @@ class ReActAgent:
     def __init__(
         self,
         kernel: Kernel,
-        service_id: str = "google_ai",
+        service_id: str = "openai",
         name: str = "ReActAgent",
         instructions: str = "",
         max_iterations: int = 10,
@@ -84,25 +83,17 @@ class ReActAgent:
         # Get AI service settings
         self.settings = self._get_execution_settings()
         
-        # Create chat completion agent for reasoning
-        # Get the service from kernel
-        service = kernel.get_service(service_id)
-        
-        self.reasoning_agent = ChatCompletionAgent(
-            kernel=kernel,
-            name=f"{name}_Reasoning",
-            instructions=self._build_react_prompt(),
-            service=service
-            # Don't use function_choice_behavior - we parse text responses
-        )
+        # Store service for direct chat completion calls
+        # Get the service from kernel for direct use
+        self.chat_service = kernel.get_service(service_id)
         
         # Chat history for conversation context
         self.chat_history = ChatHistory()
     
-    def _get_execution_settings(self) -> GoogleAIPromptExecutionSettings:
+    def _get_execution_settings(self) -> OpenAIChatPromptExecutionSettings:
         """Get execution settings for the AI service."""
-        settings = GoogleAIPromptExecutionSettings()
-        settings.max_output_tokens = 4000
+        settings = OpenAIChatPromptExecutionSettings()
+        settings.max_tokens = 4000
         settings.temperature = 0.1
         # Don't use function calling - we'll parse the text response ourselves
         # settings.function_choice_behavior = FunctionChoiceBehavior.Auto()
@@ -183,8 +174,17 @@ Begin!
         # Reset chat history for new question
         self.chat_history = ChatHistory()
         
+        # Add system instructions first
+        system_instructions = self._build_react_prompt()
+        self.chat_history.add_system_message(system_instructions)
+        
         # Add the question to start the ReAct process
-        full_question = f"Question: {question}"
+        # Check if question already starts with "Question:" to avoid duplication
+        if question.strip().startswith("Question:"):
+            full_question = question.strip()
+        else:
+            full_question = f"Question: {question}"
+            
         if full_question.strip():  # Ensure content is not empty
             self.chat_history.add_user_message(full_question)
         
@@ -196,23 +196,41 @@ Begin!
                 print(f"\n🔄 Iteration {iteration_num + 1}/{self.max_iterations}")
             
             try:
-                # Get the latest message to send
-                if len(self.chat_history) > 0:
-                    last_message = self.chat_history[-1]
-                    message_content = last_message.content
-                else:
-                    message_content = full_question
-                
-                # Get response from reasoning agent with real-time streaming
+                # Pass the entire chat history to maintain context
                 if self.verbose:
                     print("🧠 Agent thinking...", flush=True)
+                    if len(self.chat_history) > 1:  # Only show context if there's meaningful history
+                        print(f"📚 {len(self.chat_history)} messages in context")
                 
-                response_stream = self.reasoning_agent.invoke(
-                    messages=message_content
+                # Ensure we have at least one message to send
+                if len(self.chat_history) == 0:
+                    # Fallback if somehow chat history is empty
+                    if self.verbose:
+                        print("⚠️ Chat history is empty, adding initial question")
+                    self.chat_history.add_user_message(full_question)
+                
+                # Debug chat history before sending (only show if there's an issue)
+                if len(self.chat_history) == 0:
+                    if self.verbose:
+                        print("❌ Error: Chat history is still empty!")
+                    raise ValueError("Chat history cannot be empty")
+                
+                if self.verbose:
+                    first_msg = self.chat_history[0]
+                    print(f"🔍 Sending {len(self.chat_history)} messages, first: '{str(first_msg.content)[:60]}...'")
+                
+                # Use non-streaming chat completion for simplicity and reliability
+                response_messages = await self.chat_service.get_chat_message_contents(
+                    chat_history=self.chat_history,
+                    settings=self.settings
                 )
                 
-                # Stream the response in real-time
-                response_text = await self._stream_thinking_process(response_stream)
+                # Get the response text from the first message
+                response_text = str(response_messages[0].content) if response_messages else ""
+                
+                # Display the complete response if verbose
+                if self.verbose and response_text:
+                    self._display_complete_response(response_text)
                 
                 # Parse the response to extract ReAct components
                 final_answer = self._parse_response(response_text, current_iteration)
@@ -225,15 +243,12 @@ Begin!
                 # Check if we have an action to execute
                 has_action = current_iteration.action and current_iteration.action_input is not None
                 
-                if self.verbose:
-                    print(f"\n🔍 Parsing result:")
-                    print(f"   Action found: {current_iteration.action}")
-                    print(f"   Action input: {current_iteration.action_input}")
-                    print(f"   Will execute: {has_action}")
+                if self.verbose and has_action:
+                    print(f"\n🔍 Action detected: {current_iteration.action}")
                 
                 if has_action:
                     if self.verbose:
-                        print(f"\n🔄 Executing REAL tool: {current_iteration.action}...", flush=True)
+                        print(f"\n🔄 Executing tool: {current_iteration.action}...", flush=True)
                     
                     # Execute the action with real-time feedback
                     observation = await self._execute_action_with_feedback(
@@ -243,7 +258,7 @@ Begin!
                     current_iteration.observation = observation
                     
                     if self.verbose:
-                        print(f"👀 REAL Observation from tool: {observation}")
+                        print(f"👀 Observation: {observation}")
                         print(f"\n{'='*50}")
                         print("🔄 Agent continuing to think...")
                         print(f"{'='*50}")
@@ -389,52 +404,16 @@ Begin!
         except Exception as e:
             return f"❌ Error executing action {action}: {str(e)}"
     
-    async def _stream_thinking_process(self, response_stream):
-        """Stream the agent's thinking process in real-time."""
-        response_parts = []
-        accumulated_content = ""
-        
-        async for item in response_stream:
-            try:
-                if hasattr(item, 'content'):
-                    content = str(item.content) if item.content is not None else ""
-                    response_parts.append(content)
-                else:
-                    content = str(item) if item is not None else ""
-                    response_parts.append(content)
-                
-                if self.verbose and content:
-                    accumulated_content += content  # Now guaranteed to be string
-                    
-                    # Process complete lines as they come in (real-time)
-                    lines = accumulated_content.split('\n')
-                    
-                    # Process all complete lines except the last (potentially incomplete) one
-                    for line in lines[:-1]:
-                        if line.strip():
-                            self._display_line_real_time(line.strip())
-                    
-                    # Keep the last potentially incomplete line for next iteration
-                    accumulated_content = lines[-1] if lines else ""
-                    
-                    # Small delay for natural streaming effect
-                    import asyncio
-                    await asyncio.sleep(0.05)
-                    
-            except Exception as e:
-                # Handle any unexpected content types gracefully
-                content = f"[Error processing content: {str(e)}]"
-                response_parts.append(content)
-                if self.verbose:
-                    print(f"⚠️ Warning: {content}", flush=True)
-        
-        # Process any remaining content
-        if accumulated_content.strip():
-            self._display_line_real_time(accumulated_content.strip())
-        
-        # Return the complete response (all parts are already strings now)
-        complete_response = ''.join(response_parts)
-        return complete_response
+    def _display_complete_response(self, response_text: str):
+        """Display the complete agent response with appropriate formatting."""
+        if not response_text:
+            return
+            
+        lines = response_text.strip().split('\n')
+        for line in lines:
+            line = line.strip()
+            if line:
+                self._display_line_real_time(line)
     
     def _display_line_real_time(self, line: str):
         """Display a line of thinking in real-time with appropriate formatting."""
@@ -447,7 +426,6 @@ Begin!
             print(f"⚡ {line}", flush=True)
         elif line.startswith('Action Input:'):
             print(f"📝 {line}", flush=True)
-            print(f"🛑 Stopping LLM generation - about to execute tool...", flush=True)
         elif line.startswith('Final Answer:'):
             print(f"\n✅ {line}", flush=True)
         elif line.startswith('Question:'):

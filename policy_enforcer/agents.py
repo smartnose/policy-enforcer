@@ -9,7 +9,7 @@ import os
 from typing import Optional
 
 from semantic_kernel import Kernel
-from semantic_kernel.connectors.ai.google.google_ai import GoogleAIChatCompletion
+from semantic_kernel.connectors.ai.open_ai import OpenAIChatCompletion
 
 from .react_agent import ReActAgent
 from .tools import get_plugins
@@ -23,7 +23,7 @@ class PolicyEnforcerAgent:
     
     def __init__(
         self, 
-        model_name: str = "gemini-1.5-flash", 
+        model_name: str = "gpt-4o-mini", 
         temperature: float = 0.1, 
         include_rules_in_prompt: bool = True,
         api_key: Optional[str] = None
@@ -32,10 +32,10 @@ class PolicyEnforcerAgent:
         Initialize the policy enforcer agent.
         
         Args:
-            model_name: Google AI model name
+            model_name: OpenAI model name
             temperature: Model temperature for randomness
             include_rules_in_prompt: Whether to include business rules in prompt
-            api_key: Google AI API key (if not provided, will use environment)
+            api_key: OpenAI API key (if not provided, will use environment)
         """
         self.model_name = model_name
         self.temperature = temperature
@@ -44,17 +44,17 @@ class PolicyEnforcerAgent:
         # Initialize kernel
         self.kernel = Kernel()
         
-        # Set up Google AI service
+        # Set up OpenAI service
         if not api_key:
-            api_key = os.getenv("GOOGLE_API_KEY")
+            api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
-            raise ValueError("Google API key is required. Set GOOGLE_API_KEY environment variable.")
+            raise ValueError("OpenAI API key is required. Set OPENAI_API_KEY environment variable.")
         
-        # Add Google AI chat completion service
+        # Add OpenAI chat completion service
         self.kernel.add_service(
-            GoogleAIChatCompletion(
-                service_id="google_ai",
-                gemini_model_id=model_name,
+            OpenAIChatCompletion(
+                service_id="openai",
+                ai_model_id=model_name,
                 api_key=api_key
             )
         )
@@ -71,7 +71,7 @@ class PolicyEnforcerAgent:
         # Create ReAct agent
         self.react_agent = ReActAgent(
             kernel=self.kernel,
-            service_id="google_ai",
+            service_id="openai",
             name="PolicyEnforcer",
             instructions=instructions,
             max_iterations=10,
@@ -93,12 +93,10 @@ class PolicyEnforcerAgent:
             state = get_state()
             state_summary = state.get_summary()
             
-            enhanced_input = f"""
-Current State:
+            enhanced_input = f"""Current State:
 {state_summary}
 
-User Request: {user_input}
-"""
+User Request: {user_input}"""
             
             # Run the ReAct agent
             result = self.react_agent.run(enhanced_input)
@@ -125,7 +123,7 @@ User Request: {user_input}
 
 
 def create_agent(
-    model_name: str = "gemini-1.5-flash", 
+    model_name: str = "gpt-4o-mini", 
     temperature: float = 0.1, 
     include_rules_in_prompt: bool = True,
     api_key: Optional[str] = None
@@ -134,11 +132,11 @@ def create_agent(
     Create a new policy enforcer agent instance.
     
     Args:
-        model_name: The name of the Google AI model to use
+        model_name: The name of the OpenAI model to use
         temperature: The temperature for the model
         include_rules_in_prompt: Whether to include business rules in the prompt.
                                 If False, agent learns rules through tool execution feedback.
-        api_key: Google AI API key (optional if set in environment)
+        api_key: OpenAI API key (optional if set in environment)
         
     Returns:
         Configured PolicyEnforcerAgent instance

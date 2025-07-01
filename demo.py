@@ -170,9 +170,9 @@ def main():
         print("="*60)
         print("🎉 All plugins working correctly!")
         print("📊 Business rules enforcement fully functional")
-        print("🔧 Ready for full agent testing with Google API key")
+        print("🔧 Ready for full agent testing with OpenAI API key")
         print("\nTo run the full agent:")
-        print("1. Set GOOGLE_API_KEY environment variable")
+        print("1. Set OPENAI_API_KEY environment variable")
         print("2. Run: python main.py")
         
     except Exception as e:
