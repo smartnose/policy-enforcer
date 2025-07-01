@@ -348,6 +348,7 @@ Begin!
         
         if self.verbose:
             print(f"✅ Action completed")
+            print(f"   Result: {result}")
             
             # Show state changes after action
             state = get_state()
