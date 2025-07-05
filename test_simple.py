@@ -48,6 +48,30 @@ def simple_test():
         print(f"Without rules: {without_rules.policy_violations} violations")
         print(f"Difference:    {without_rules.policy_violations - with_rules.policy_violations}")
         
+        # Save results for visualization
+        from datetime import datetime
+        import json
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        results_data = []
+        
+        for result in results:
+            results_data.append({
+                'config': result.config._asdict(),
+                'policy_violations': result.policy_violations,
+                'total_tool_calls': result.total_tool_calls,
+                'success': result.success,
+                'error_message': result.error_message,
+                'execution_time': result.execution_time
+            })
+        
+        output_file = f"simple_test_results_{timestamp}.json"
+        with open(output_file, 'w') as f:
+            json.dump(results_data, f, indent=2)
+        
+        print(f"💾 Results saved to: {output_file}")
+        print(f"📊 Create visualization with: python create_simple_chart.py {output_file}")
+        
         return results
         
     finally:

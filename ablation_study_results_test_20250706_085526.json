@@ -1,0 +1,1302 @@
+[
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.0,
+      "include_rules": true,
+      "run_number": 1
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.0,
+      "include_rules": true,
+      "run_number": 2
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.0,
+      "include_rules": true,
+      "run_number": 3
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.0,
+      "include_rules": true,
+      "run_number": 4
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.0,
+      "include_rules": true,
+      "run_number": 5
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.0,
+      "include_rules": false,
+      "run_number": 1
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.5
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.0,
+      "include_rules": false,
+      "run_number": 2
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.0,
+      "include_rules": false,
+      "run_number": 3
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.5
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.0,
+      "include_rules": false,
+      "run_number": 4
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.0,
+      "include_rules": false,
+      "run_number": 5
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.5
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "include_rules": true,
+      "run_number": 1
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "include_rules": true,
+      "run_number": 2
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "include_rules": true,
+      "run_number": 3
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "include_rules": true,
+      "run_number": 4
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "include_rules": true,
+      "run_number": 5
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "include_rules": false,
+      "run_number": 1
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.7
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "include_rules": false,
+      "run_number": 2
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "include_rules": false,
+      "run_number": 3
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.7
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "include_rules": false,
+      "run_number": 4
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "include_rules": false,
+      "run_number": 5
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.7
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.4,
+      "include_rules": true,
+      "run_number": 1
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.4,
+      "include_rules": true,
+      "run_number": 2
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.4,
+      "include_rules": true,
+      "run_number": 3
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.4,
+      "include_rules": true,
+      "run_number": 4
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.4,
+      "include_rules": true,
+      "run_number": 5
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.4,
+      "include_rules": false,
+      "run_number": 1
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.9
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.4,
+      "include_rules": false,
+      "run_number": 2
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.4,
+      "include_rules": false,
+      "run_number": 3
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.9
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.4,
+      "include_rules": false,
+      "run_number": 4
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.4,
+      "include_rules": false,
+      "run_number": 5
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.9
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.6,
+      "include_rules": true,
+      "run_number": 1
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.6,
+      "include_rules": true,
+      "run_number": 2
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.6,
+      "include_rules": true,
+      "run_number": 3
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.6,
+      "include_rules": true,
+      "run_number": 4
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.6,
+      "include_rules": true,
+      "run_number": 5
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.6,
+      "include_rules": false,
+      "run_number": 1
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.1
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.6,
+      "include_rules": false,
+      "run_number": 2
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.6,
+      "include_rules": false,
+      "run_number": 3
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.1
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.6,
+      "include_rules": false,
+      "run_number": 4
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.6,
+      "include_rules": false,
+      "run_number": 5
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.1
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.8,
+      "include_rules": true,
+      "run_number": 1
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.8,
+      "include_rules": true,
+      "run_number": 2
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.8,
+      "include_rules": true,
+      "run_number": 3
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.8,
+      "include_rules": true,
+      "run_number": 4
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.8,
+      "include_rules": true,
+      "run_number": 5
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.8,
+      "include_rules": false,
+      "run_number": 1
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.3
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.8,
+      "include_rules": false,
+      "run_number": 2
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.8,
+      "include_rules": false,
+      "run_number": 3
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.3
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.8,
+      "include_rules": false,
+      "run_number": 4
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-1.5-flash",
+      "temperature": 0.8,
+      "include_rules": false,
+      "run_number": 5
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.3
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.0,
+      "include_rules": true,
+      "run_number": 1
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.0,
+      "include_rules": true,
+      "run_number": 2
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.0,
+      "include_rules": true,
+      "run_number": 3
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.0,
+      "include_rules": true,
+      "run_number": 4
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.0,
+      "include_rules": true,
+      "run_number": 5
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.0,
+      "include_rules": false,
+      "run_number": 1
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.5
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.0,
+      "include_rules": false,
+      "run_number": 2
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.0,
+      "include_rules": false,
+      "run_number": 3
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.5
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.0,
+      "include_rules": false,
+      "run_number": 4
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.0
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.0,
+      "include_rules": false,
+      "run_number": 5
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.5
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.2,
+      "include_rules": true,
+      "run_number": 1
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.2,
+      "include_rules": true,
+      "run_number": 2
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.2,
+      "include_rules": true,
+      "run_number": 3
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.2,
+      "include_rules": true,
+      "run_number": 4
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.2,
+      "include_rules": true,
+      "run_number": 5
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.2,
+      "include_rules": false,
+      "run_number": 1
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.7
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.2,
+      "include_rules": false,
+      "run_number": 2
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.2,
+      "include_rules": false,
+      "run_number": 3
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.7
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.2,
+      "include_rules": false,
+      "run_number": 4
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.2
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.2,
+      "include_rules": false,
+      "run_number": 5
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.7
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.4,
+      "include_rules": true,
+      "run_number": 1
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.4,
+      "include_rules": true,
+      "run_number": 2
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.4,
+      "include_rules": true,
+      "run_number": 3
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.4,
+      "include_rules": true,
+      "run_number": 4
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.4,
+      "include_rules": true,
+      "run_number": 5
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.4,
+      "include_rules": false,
+      "run_number": 1
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.9
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.4,
+      "include_rules": false,
+      "run_number": 2
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.4,
+      "include_rules": false,
+      "run_number": 3
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.9
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.4,
+      "include_rules": false,
+      "run_number": 4
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.4
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.4,
+      "include_rules": false,
+      "run_number": 5
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.9
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.6,
+      "include_rules": true,
+      "run_number": 1
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.6,
+      "include_rules": true,
+      "run_number": 2
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.6,
+      "include_rules": true,
+      "run_number": 3
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.6,
+      "include_rules": true,
+      "run_number": 4
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.6,
+      "include_rules": true,
+      "run_number": 5
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.6,
+      "include_rules": false,
+      "run_number": 1
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.1
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.6,
+      "include_rules": false,
+      "run_number": 2
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.6,
+      "include_rules": false,
+      "run_number": 3
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.1
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.6,
+      "include_rules": false,
+      "run_number": 4
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.6
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.6,
+      "include_rules": false,
+      "run_number": 5
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.1
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.8,
+      "include_rules": true,
+      "run_number": 1
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.8,
+      "include_rules": true,
+      "run_number": 2
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.8,
+      "include_rules": true,
+      "run_number": 3
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.8,
+      "include_rules": true,
+      "run_number": 4
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.8,
+      "include_rules": true,
+      "run_number": 5
+    },
+    "policy_violations": 0,
+    "total_tool_calls": 3,
+    "success": true,
+    "error_message": "",
+    "execution_time": 2.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.8,
+      "include_rules": false,
+      "run_number": 1
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.3
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.8,
+      "include_rules": false,
+      "run_number": 2
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.8,
+      "include_rules": false,
+      "run_number": 3
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.3
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.8,
+      "include_rules": false,
+      "run_number": 4
+    },
+    "policy_violations": 2,
+    "total_tool_calls": 5,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.8
+  },
+  {
+    "config": {
+      "model_name": "gemini-2.0-flash",
+      "temperature": 0.8,
+      "include_rules": false,
+      "run_number": 5
+    },
+    "policy_violations": 1,
+    "total_tool_calls": 4,
+    "success": true,
+    "error_message": "",
+    "execution_time": 3.3
+  }
+]
